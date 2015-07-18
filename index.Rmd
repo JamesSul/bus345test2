@@ -1,0 +1,59 @@
+---
+title       : Why MIS?
+subtitle    : Chapter 1
+author      : BUS 345
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : solarized dark      # 
+widgets     : [bootstrap, quiz]            # {mathjax, quiz, bootstrap}
+ext_widgets : {rCharts: [libraries/nvd3]}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+--- &radio
+
+## What is Moore's Law?
+
+1. Computer processors become twice as fast every 18 months.
+2. _The number of transistors we cab fit on a processor chip doubles every 18 months._
+3. Bandwidth on the interenet doubles every 18 months.
+4. The number of users on the internet doubles every 18 months.
+
+*** .hint
+Gordon Moore is a co-founder of Intel, which makes processors.
+
+*** .explanation
+Moore's law is commonly misunderstood to apply to the speed of computers, which is technically incorrect (althought it captures the sense of his principle).
+
+*** =pnotes
+Append ?presentme=true to url
+
+--- .class #id 
+
+## Effect of Moore's Law
+
+[!["Gordon Moore" by Steve Jurvetson from Menlo Park, USA - Moore Fish. Licensed under CC BY 2.0 via Wikimedia Commons](./assets/img/Gordon_Moore.jpg)](https://commons.wikimedia.org/wiki/File:Gordon_Moore.jpg#/media/File:Gordon_Moore.jpg)
+
+The cost of data processing, communications, and storage is essentially zero.
+
+______
+
+[![Groupwise Quota](./assets/img/groupwise_quota.png)](https://webapp.usm.maine.edu/confluence/display/kb/How+to+deal+with+a+full+mailbox)
+
+
+*** =pnotes
+When I came to USM, we were using groupwise and not gmail.
+How much space is on the maine.edu gmail drives? 30Gb and keeps going up
+Why are we still doing this?
+
+--- .class #id
+## Transistor Prices
+```{r echo = F, results = 'asis'}
+require(rCharts)
+years <- c('1983', '1985', '1988', '1997', '2002', '2005', '2015')
+cost <- c(3923, 902.95, 314.50, 17.45, 0.97, 0.05, 0.01)
+transistors <- data.frame(year = years, cost = cost)
+m1 <- mPlot(x = "year", y = "cost", type = "line", data = transistors)
+m1$set(pointSize = 0, lineWidth = 1)
+m1$print('chart1')
+```
