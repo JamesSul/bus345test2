@@ -3,3 +3,5 @@ slidify
 devtools
 rCharts
 reshape2
+servr
+dplyr

@@ -58,7 +58,7 @@
 <div class="quiz quiz-single well ">
   <ol>
 <li>Computer processors become twice as fast every 18 months.</li>
-<li><em>The number of transistors we cab fit on a processor chip doubles every 18 months.</em></li>
+<li><em>The number of transistors we can fit on a processor chip doubles every 18 months.</em></li>
 <li>Bandwidth on the interenet doubles every 18 months.</li>
 <li>The number of users on the internet doubles every 18 months.</li>
 </ol>
@@ -89,46 +89,26 @@
 
 <slide class="class" id="id" style="background:;">
   <hgroup>
-    <h2>Effect of Moore&#39;s Law</h2>
-  </hgroup>
-  <article data-timings="">
-    <p><a href="https://commons.wikimedia.org/wiki/File:Gordon_Moore.jpg#/media/File:Gordon_Moore.jpg"><img src="./assets/img/Gordon_Moore.jpg" alt="&quot;Gordon Moore&quot; by Steve Jurvetson from Menlo Park, USA - Moore Fish. Licensed under CC BY 2.0 via Wikimedia Commons"></a></p>
-
-<p>The cost of data processing, communications, and storage is essentially zero.</p>
-
-<hr>
-
-<p><a href="https://webapp.usm.maine.edu/confluence/display/kb/How+to+deal+with+a+full+mailbox"><img src="./assets/img/groupwise_quota.png" alt="Groupwise Quota"></a></p>
-
-  </article>
-  <!-- Presenter Notes -->
-  <aside class="note" id="">
-    <section>
-      <p>When I came to USM, we were using groupwise and not gmail.
-How much space is on the maine.edu gmail drives? 30Gb and keeps going up
-Why are we still doing this?</p>
-
-    </section>
-  </aside>
-</slide>
-
-<slide class="class" id="id" style="background:;">
-  <hgroup>
     <h2>Transistor Prices</h2>
   </hgroup>
   <article data-timings="">
-    <div id = 'chart1' class = 'rChart morris'></div>
+    <div id = 'chart1' class = 'rChart nvd3'></div>
 
 <script type='text/javascript'>
-    var chartParams = {
- "element": "chart1",
-"width":            800,
-"height":            400,
-"xkey": "year",
-"ykeys": [
- "cost" 
-],
-"data": [
+ $(document).ready(function(){
+      drawchart1()
+    });
+    function drawchart1(){  
+      var opts = {
+ "dom": "chart1",
+"width":    800,
+"height":    400,
+"x": "year",
+"y": "cost",
+"type": "scatterChart",
+"id": "chart1" 
+},
+        data = [
  {
  "year": "1983",
 "cost":           3923 
@@ -157,16 +137,4357 @@ Why are we still doing this?</p>
  "year": "2015",
 "cost":           0.01 
 } 
-],
-"pointSize":              0,
-"lineWidth":              1,
-"id": "chart1",
-"labels": "cost" 
-},
-      chartType = "line"
-    new Morris[chartType](chartParams)
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        chart
+  .showControls(false)
+          
+        
+
+        
+        
+        chart.yAxis
+  .axisLabel("Cost per 100K transistors (2010 dollars)")
+  .tickFormat( function(d) {return '$' + d} )
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
 </script>
 
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Storage Prices</h2>
+  </hgroup>
+  <article data-timings="">
+    <div id = 'chart2' class = 'rChart nvd3'></div>
+
+<script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart2()
+    });
+    function drawchart2(){  
+      var opts = {
+ "dom": "chart2",
+"width":    800,
+"height":    400,
+"x": "ldate",
+"y": "dollarsPerGb",
+"type": "scatterChart",
+"id": "chart2" 
+},
+        data = [
+ {
+ "dateDecimal":           1980,
+"date": "1980 January",
+"driveInfo": "Morrow Designs",
+"sizeInMb":             26,
+"sizeInGb":          0.026,
+"cost":           5000,
+"dollarsPerGb":         193000,
+"predictedDollarsPerGb":     1974730.74,
+"logCostPerGb":           5.29,
+"predictedLogCostPerGb":            6.3,
+"ldate":           3652 
+},
+{
+ "dateDecimal":         1980.5,
+"date": "1980 July",
+"driveInfo": "North Star",
+"sizeInMb":             18,
+"sizeInGb":          0.018,
+"cost":           4199,
+"dollarsPerGb":         233000,
+"predictedDollarsPerGb":     1480897.96,
+"logCostPerGb":           5.37,
+"predictedLogCostPerGb":           6.17,
+"ldate":           3834 
+},
+{
+ "dateDecimal":        1981.67,
+"date": "1981 September",
+"driveInfo": "Apple",
+"sizeInMb":              5,
+"sizeInGb":          0.005,
+"cost":           3500,
+"dollarsPerGb":         700000,
+"predictedDollarsPerGb":      756656.41,
+"logCostPerGb":           5.85,
+"predictedLogCostPerGb":           5.88,
+"ldate":           4261 
+},
+{
+ "dateDecimal":        1981.83,
+"date": "1981 November",
+"driveInfo": "Seagate",
+"sizeInMb":              5,
+"sizeInGb":          0.005,
+"cost":           1700,
+"dollarsPerGb":         340000,
+"predictedDollarsPerGb":      687444.75,
+"logCostPerGb":           5.53,
+"predictedLogCostPerGb":           5.84,
+"ldate":           4322 
+},
+{
+ "dateDecimal":        1981.92,
+"date": "1981 December",
+"driveInfo": "VR Data Corp.",
+"sizeInMb":            6.3,
+"sizeInGb":          0.006,
+"cost":           2895,
+"dollarsPerGb":         460000,
+"predictedDollarsPerGb":      655250.47,
+"logCostPerGb":           5.66,
+"predictedLogCostPerGb":           5.82,
+"ldate":           4352 
+},
+{
+ "dateDecimal":        1981.92,
+"date": "1981 December",
+"driveInfo": "Morrow Designs",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           2999,
+"dollarsPerGb":         300000,
+"predictedDollarsPerGb":      655250.47,
+"logCostPerGb":           5.48,
+"predictedLogCostPerGb":           5.82,
+"ldate":           4352 
+},
+{
+ "dateDecimal":        1981.92,
+"date": "1981 December",
+"driveInfo": "Morrow Designs",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           2949,
+"dollarsPerGb":         295000,
+"predictedDollarsPerGb":      655250.47,
+"logCostPerGb":           5.47,
+"predictedLogCostPerGb":           5.82,
+"ldate":           4352 
+},
+{
+ "dateDecimal":        1981.92,
+"date": "1981 December",
+"driveInfo": "VR Data Corp.",
+"sizeInMb":             19,
+"sizeInGb":          0.019,
+"cost":           5495,
+"dollarsPerGb":         289000,
+"predictedDollarsPerGb":      655250.47,
+"logCostPerGb":           5.46,
+"predictedLogCostPerGb":           5.82,
+"ldate":           4352 
+},
+{
+ "dateDecimal":        1981.92,
+"date": "1981 December",
+"driveInfo": "Morrow Designs",
+"sizeInMb":             20,
+"sizeInGb":           0.02,
+"cost":           3829,
+"dollarsPerGb":         191000,
+"predictedDollarsPerGb":      655250.47,
+"logCostPerGb":           5.28,
+"predictedLogCostPerGb":           5.82,
+"ldate":           4352 
+},
+{
+ "dateDecimal":        1981.92,
+"date": "1981 December",
+"driveInfo": "Morrow Designs",
+"sizeInMb":             26,
+"sizeInGb":          0.026,
+"cost":           3949,
+"dollarsPerGb":         152000,
+"predictedDollarsPerGb":      655250.47,
+"logCostPerGb":           5.18,
+"predictedLogCostPerGb":           5.82,
+"ldate":           4352 
+},
+{
+ "dateDecimal":        1981.92,
+"date": "1981 December",
+"driveInfo": "Morrow Designs",
+"sizeInMb":             26,
+"sizeInGb":          0.026,
+"cost":           3599,
+"dollarsPerGb":         138000,
+"predictedDollarsPerGb":      655250.47,
+"logCostPerGb":           5.14,
+"predictedLogCostPerGb":           5.82,
+"ldate":           4352 
+},
+{
+ "dateDecimal":        1982.17,
+"date": "1982 March",
+"driveInfo": "Xebec",
+"sizeInMb": null,
+"sizeInGb": null,
+"cost": null,
+"dollarsPerGb":         260000,
+"predictedDollarsPerGb":       567434.8,
+"logCostPerGb":           5.41,
+"predictedLogCostPerGb":           5.75,
+"ldate":           4442 
+},
+{
+ "dateDecimal":        1983.92,
+"date": "1983 December",
+"driveInfo": "Corvus",
+"sizeInMb":              6,
+"sizeInGb":          0.006,
+"cost":           1895,
+"dollarsPerGb":         316000,
+"predictedDollarsPerGb":      207241.32,
+"logCostPerGb":            5.5,
+"predictedLogCostPerGb":           5.32,
+"ldate":           5082 
+},
+{
+ "dateDecimal":        1983.92,
+"date": "1983 December",
+"driveInfo": "Corvus",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           2695,
+"dollarsPerGb":         270000,
+"predictedDollarsPerGb":      207241.32,
+"logCostPerGb":           5.43,
+"predictedLogCostPerGb":           5.32,
+"ldate":           5082 
+},
+{
+ "dateDecimal":        1983.92,
+"date": "1983 December",
+"driveInfo": "Xcomp",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           1895,
+"dollarsPerGb":         190000,
+"predictedDollarsPerGb":      207241.32,
+"logCostPerGb":           5.28,
+"predictedLogCostPerGb":           5.32,
+"ldate":           5082 
+},
+{
+ "dateDecimal":        1983.92,
+"date": "1983 December",
+"driveInfo": "Corvus",
+"sizeInMb":             20,
+"sizeInGb":           0.02,
+"cost":           3495,
+"dollarsPerGb":         175000,
+"predictedDollarsPerGb":      207241.32,
+"logCostPerGb":           5.24,
+"predictedLogCostPerGb":           5.32,
+"ldate":           5082 
+},
+{
+ "dateDecimal":        1983.92,
+"date": "1983 December",
+"driveInfo": "Davong",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           1650,
+"dollarsPerGb":         165000,
+"predictedDollarsPerGb":      207241.32,
+"logCostPerGb":           5.22,
+"predictedLogCostPerGb":           5.32,
+"ldate":           5082 
+},
+{
+ "dateDecimal":        1983.92,
+"date": "1983 December",
+"driveInfo": "Xcomp",
+"sizeInMb":             16,
+"sizeInGb":          0.016,
+"cost":           2095,
+"dollarsPerGb":         131000,
+"predictedDollarsPerGb":      207241.32,
+"logCostPerGb":           5.12,
+"predictedLogCostPerGb":           5.32,
+"ldate":           5082 
+},
+{
+ "dateDecimal":        1983.92,
+"date": "1983 December",
+"driveInfo": "Davong",
+"sizeInMb":             21,
+"sizeInGb":          0.021,
+"cost":           2495,
+"dollarsPerGb":         119000,
+"predictedDollarsPerGb":      207241.32,
+"logCostPerGb":           5.08,
+"predictedLogCostPerGb":           5.32,
+"ldate":           5082 
+},
+{
+ "dateDecimal":        1984.17,
+"date": "1984 March",
+"driveInfo": "Percom/Tandon",
+"sizeInMb":              5,
+"sizeInGb":          0.005,
+"cost":           1399,
+"dollarsPerGb":         280000,
+"predictedDollarsPerGb":      179467.15,
+"logCostPerGb":           5.45,
+"predictedLogCostPerGb":           5.25,
+"ldate":           5173 
+},
+{
+ "dateDecimal":        1984.17,
+"date": "1984 March",
+"driveInfo": "",
+"sizeInMb":              5,
+"sizeInGb":          0.005,
+"cost":           1349,
+"dollarsPerGb":         270000,
+"predictedDollarsPerGb":      179467.15,
+"logCostPerGb":           5.43,
+"predictedLogCostPerGb":           5.25,
+"ldate":           5173 
+},
+{
+ "dateDecimal":        1984.17,
+"date": "1984 March",
+"driveInfo": "Percom/Tandon",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           1699,
+"dollarsPerGb":         170000,
+"predictedDollarsPerGb":      179467.15,
+"logCostPerGb":           5.23,
+"predictedLogCostPerGb":           5.25,
+"ldate":           5173 
+},
+{
+ "dateDecimal":        1984.17,
+"date": "1984 March",
+"driveInfo": "",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           1599,
+"dollarsPerGb":         160000,
+"predictedDollarsPerGb":      179467.15,
+"logCostPerGb":            5.2,
+"predictedLogCostPerGb":           5.25,
+"ldate":           5173 
+},
+{
+ "dateDecimal":        1984.17,
+"date": "1984 March",
+"driveInfo": "Percom/Tandon",
+"sizeInMb":             15,
+"sizeInGb":          0.015,
+"cost":           2095,
+"dollarsPerGb":         140000,
+"predictedDollarsPerGb":      179467.15,
+"logCostPerGb":           5.15,
+"predictedLogCostPerGb":           5.25,
+"ldate":           5173 
+},
+{
+ "dateDecimal":        1984.17,
+"date": "1984 March",
+"driveInfo": "",
+"sizeInMb":             15,
+"sizeInGb":          0.015,
+"cost":           1999,
+"dollarsPerGb":         133000,
+"predictedDollarsPerGb":      179467.15,
+"logCostPerGb":           5.12,
+"predictedLogCostPerGb":           5.25,
+"ldate":           5173 
+},
+{
+ "dateDecimal":        1984.17,
+"date": "1984 March",
+"driveInfo": "Percom/Tandon",
+"sizeInMb":             20,
+"sizeInGb":           0.02,
+"cost":           2399,
+"dollarsPerGb":         120000,
+"predictedDollarsPerGb":      179467.15,
+"logCostPerGb":           5.08,
+"predictedLogCostPerGb":           5.25,
+"ldate":           5173 
+},
+{
+ "dateDecimal":        1984.17,
+"date": "1984 March",
+"driveInfo": "",
+"sizeInMb":             20,
+"sizeInGb":           0.02,
+"cost":           2359,
+"dollarsPerGb":         118000,
+"predictedDollarsPerGb":      179467.15,
+"logCostPerGb":           5.07,
+"predictedLogCostPerGb":           5.25,
+"ldate":           5173 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Tecmar",
+"sizeInMb":              5,
+"sizeInGb":          0.005,
+"cost":           1495,
+"dollarsPerGb":         299000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":           5.48,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Corvus",
+"sizeInMb":              6,
+"sizeInGb":          0.006,
+"cost":           1695,
+"dollarsPerGb":         283000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":           5.45,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Corvus",
+"sizeInMb":             11,
+"sizeInGb":          0.011,
+"cost":           2350,
+"dollarsPerGb":         214000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":           5.33,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Comrex",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           1995,
+"dollarsPerGb":         200000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":            5.3,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "CTI",
+"sizeInMb":             11,
+"sizeInGb":          0.011,
+"cost":           1995,
+"dollarsPerGb":         181000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":           5.26,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Davong",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           1645,
+"dollarsPerGb":         165000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":           5.22,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Corvus",
+"sizeInMb":             20,
+"sizeInGb":           0.02,
+"cost":           3150,
+"dollarsPerGb":         158000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":            5.2,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Davong",
+"sizeInMb":             15,
+"sizeInGb":          0.015,
+"cost":           2095,
+"dollarsPerGb":         140000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":           5.15,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Davong",
+"sizeInMb":             21,
+"sizeInGb":          0.021,
+"cost":           2495,
+"dollarsPerGb":         119000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":           5.08,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Pegasus (Great Lakes)",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":           1075,
+"dollarsPerGb":         108000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":           5.03,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":        1984.33,
+"date": "1984 May",
+"driveInfo": "Pegasus (Great Lakes)",
+"sizeInMb":             23,
+"sizeInGb":          0.023,
+"cost":           1845,
+"dollarsPerGb":          80000,
+"predictedDollarsPerGb":      163051.22,
+"logCostPerGb":            4.9,
+"predictedLogCostPerGb":           5.21,
+"ldate":           5234 
+},
+{
+ "dateDecimal":         1985.5,
+"date": "1985 July",
+"driveInfo": "First Class Peripherals",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":            710,
+"dollarsPerGb":          71000,
+"predictedDollarsPerGb":        83310.1,
+"logCostPerGb":           4.85,
+"predictedLogCostPerGb":           4.92,
+"ldate":           5660 
+},
+{
+ "dateDecimal":        1987.75,
+"date": "1987 October",
+"driveInfo": "Iomega",
+"sizeInMb":             10,
+"sizeInGb":           0.01,
+"cost":            899,
+"dollarsPerGb":          90000,
+"predictedDollarsPerGb":       22817.88,
+"logCostPerGb":           4.95,
+"predictedLogCostPerGb":           4.36,
+"ldate":           6482 
+},
+{
+ "dateDecimal":        1987.75,
+"date": "1987 October",
+"driveInfo": "Iomega",
+"sizeInMb":             20,
+"sizeInGb":           0.02,
+"cost":           1199,
+"dollarsPerGb":          60000,
+"predictedDollarsPerGb":       22817.88,
+"logCostPerGb":           4.78,
+"predictedLogCostPerGb":           4.36,
+"ldate":           6482 
+},
+{
+ "dateDecimal":        1987.75,
+"date": "1987 October",
+"driveInfo": "Iomega",
+"sizeInMb":             40,
+"sizeInGb":           0.04,
+"cost":           1799,
+"dollarsPerGb":          45000,
+"predictedDollarsPerGb":       22817.88,
+"logCostPerGb":           4.65,
+"predictedLogCostPerGb":           4.36,
+"ldate":           6482 
+},
+{
+ "dateDecimal":        1988.33,
+"date": "1988 May",
+"driveInfo": "",
+"sizeInMb":             20,
+"sizeInGb":           0.02,
+"cost":            799,
+"dollarsPerGb":          40000,
+"predictedDollarsPerGb":        16310.3,
+"logCostPerGb":            4.6,
+"predictedLogCostPerGb":           4.21,
+"ldate":           6695 
+},
+{
+ "dateDecimal":        1988.33,
+"date": "1988 May",
+"driveInfo": "",
+"sizeInMb":             30,
+"sizeInGb":           0.03,
+"cost":            995,
+"dollarsPerGb":          33000,
+"predictedDollarsPerGb":        16310.3,
+"logCostPerGb":           4.52,
+"predictedLogCostPerGb":           4.21,
+"ldate":           6695 
+},
+{
+ "dateDecimal":        1988.33,
+"date": "1988 May",
+"driveInfo": "",
+"sizeInMb":             45,
+"sizeInGb":          0.045,
+"cost":           1195,
+"dollarsPerGb":          27000,
+"predictedDollarsPerGb":        16310.3,
+"logCostPerGb":           4.43,
+"predictedLogCostPerGb":           4.21,
+"ldate":           6695 
+},
+{
+ "dateDecimal":        1988.33,
+"date": "1988 May",
+"driveInfo": "",
+"sizeInMb":             60,
+"sizeInGb":           0.06,
+"cost":           1795,
+"dollarsPerGb":          30000,
+"predictedDollarsPerGb":        16310.3,
+"logCostPerGb":           4.48,
+"predictedLogCostPerGb":           4.21,
+"ldate":           6695 
+},
+{
+ "dateDecimal":        1988.33,
+"date": "1988 May",
+"driveInfo": "",
+"sizeInMb":            250,
+"sizeInGb":           0.25,
+"cost":           3995,
+"dollarsPerGb":          16000,
+"predictedDollarsPerGb":        16310.3,
+"logCostPerGb":            4.2,
+"predictedLogCostPerGb":           4.21,
+"ldate":           6695 
+},
+{
+ "dateDecimal":        1989.17,
+"date": "1989 March",
+"driveInfo": "Western Digital",
+"sizeInMb":             20,
+"sizeInGb":           0.02,
+"cost":            899,
+"dollarsPerGb":          53000,
+"predictedDollarsPerGb":       10096.19,
+"logCostPerGb":           4.72,
+"predictedLogCostPerGb":              4,
+"ldate":           6999 
+},
+{
+ "dateDecimal":        1989.17,
+"date": "1989 March",
+"driveInfo": "Western Digital",
+"sizeInMb":             40,
+"sizeInGb":           0.04,
+"cost":           1199,
+"dollarsPerGb":          36000,
+"predictedDollarsPerGb":       10096.19,
+"logCostPerGb":           4.56,
+"predictedLogCostPerGb":              4,
+"ldate":           6999 
+},
+{
+ "dateDecimal":        1989.67,
+"date": "1989 September",
+"driveInfo": "",
+"sizeInMb": null,
+"sizeInGb": null,
+"cost": null,
+"dollarsPerGb":          12000,
+"predictedDollarsPerGb":        7571.37,
+"logCostPerGb":           4.08,
+"predictedLogCostPerGb":           3.88,
+"ldate":           7183 
+},
+{
+ "dateDecimal":        1990.67,
+"date": "1990 September",
+"driveInfo": "",
+"sizeInMb": null,
+"sizeInGb": null,
+"cost": null,
+"dollarsPerGb":           9000,
+"predictedDollarsPerGb":        4258.03,
+"logCostPerGb":           3.95,
+"predictedLogCostPerGb":           3.63,
+"ldate":           7548 
+},
+{
+ "dateDecimal":        1991.67,
+"date": "1991 September",
+"driveInfo": "",
+"sizeInMb": null,
+"sizeInGb": null,
+"cost": null,
+"dollarsPerGb":           7000,
+"predictedDollarsPerGb":        2394.66,
+"logCostPerGb":           3.85,
+"predictedLogCostPerGb":           3.38,
+"ldate":           7913 
+},
+{
+ "dateDecimal":        1992.67,
+"date": "1992 September",
+"driveInfo": "",
+"sizeInMb": null,
+"sizeInGb": null,
+"cost": null,
+"dollarsPerGb":           4000,
+"predictedDollarsPerGb":        1346.72,
+"logCostPerGb":            3.6,
+"predictedLogCostPerGb":           3.13,
+"ldate":           8279 
+},
+{
+ "dateDecimal":        1993.67,
+"date": "1993 September",
+"driveInfo": "",
+"sizeInMb": null,
+"sizeInGb": null,
+"cost": null,
+"dollarsPerGb":           2000,
+"predictedDollarsPerGb":         757.38,
+"logCostPerGb":            3.3,
+"predictedLogCostPerGb":           2.88,
+"ldate":           8644 
+},
+{
+ "dateDecimal":        1994.67,
+"date": "1994 September",
+"driveInfo": "",
+"sizeInMb": null,
+"sizeInGb": null,
+"cost": null,
+"dollarsPerGb":            950,
+"predictedDollarsPerGb":         425.94,
+"logCostPerGb":           2.98,
+"predictedLogCostPerGb":           2.63,
+"ldate":           9009 
+},
+{
+ "dateDecimal":           1995,
+"date": "1995 January",
+"driveInfo": "Seagate",
+"sizeInMb":           1000,
+"sizeInGb":              1,
+"cost":            849,
+"dollarsPerGb":            850,
+"predictedDollarsPerGb":         351.58,
+"logCostPerGb":           2.93,
+"predictedLogCostPerGb":           2.55,
+"ldate":           9131 
+},
+{
+ "dateDecimal":           1995,
+"date": "1995 January",
+"driveInfo": "Seagate",
+"sizeInMb":           1700,
+"sizeInGb":            1.7,
+"cost":           1499,
+"dollarsPerGb":            880,
+"predictedDollarsPerGb":         351.58,
+"logCostPerGb":           2.94,
+"predictedLogCostPerGb":           2.55,
+"ldate":           9131 
+},
+{
+ "dateDecimal":           1995,
+"date": "1995 January",
+"driveInfo": "Seagate",
+"sizeInMb":           2100,
+"sizeInGb":            2.1,
+"cost":           1699,
+"dollarsPerGb":            810,
+"predictedDollarsPerGb":         351.58,
+"logCostPerGb":           2.91,
+"predictedLogCostPerGb":           2.55,
+"ldate":           9131 
+},
+{
+ "dateDecimal":           1995,
+"date": "1995 January",
+"driveInfo": "Seagate",
+"sizeInMb":           2900,
+"sizeInGb":            2.9,
+"cost":           2899,
+"dollarsPerGb":            990,
+"predictedDollarsPerGb":         351.58,
+"logCostPerGb":              3,
+"predictedLogCostPerGb":           2.55,
+"ldate":           9131 
+},
+{
+ "dateDecimal":        1995.25,
+"date": "1995 April",
+"driveInfo": "",
+"sizeInMb":            240,
+"sizeInGb":           0.24,
+"cost":            250,
+"dollarsPerGb":           1260,
+"predictedDollarsPerGb":         304.46,
+"logCostPerGb":            3.1,
+"predictedLogCostPerGb":           2.48,
+"ldate":           9221 
+},
+{
+ "dateDecimal":        1995.25,
+"date": "1995 April",
+"driveInfo": "",
+"sizeInMb":            420,
+"sizeInGb":           0.42,
+"cost":            320,
+"dollarsPerGb":            922,
+"predictedDollarsPerGb":         304.46,
+"logCostPerGb":           2.96,
+"predictedLogCostPerGb":           2.48,
+"ldate":           9221 
+},
+{
+ "dateDecimal":        1995.25,
+"date": "1995 April",
+"driveInfo": "",
+"sizeInMb":            520,
+"sizeInGb":           0.52,
+"cost":            380,
+"dollarsPerGb":            884,
+"predictedDollarsPerGb":         304.46,
+"logCostPerGb":           2.95,
+"predictedLogCostPerGb":           2.48,
+"ldate":           9221 
+},
+{
+ "dateDecimal":        1995.25,
+"date": "1995 April",
+"driveInfo": "",
+"sizeInMb":            850,
+"sizeInGb":           0.85,
+"cost":            470,
+"dollarsPerGb":            669,
+"predictedDollarsPerGb":         304.46,
+"logCostPerGb":           2.83,
+"predictedLogCostPerGb":           2.48,
+"ldate":           9221 
+},
+{
+ "dateDecimal":        1995.25,
+"date": "1995 April",
+"driveInfo": "",
+"sizeInMb":           1000,
+"sizeInGb":              1,
+"cost":            625,
+"dollarsPerGb":            756,
+"predictedDollarsPerGb":         304.46,
+"logCostPerGb":           2.88,
+"predictedLogCostPerGb":           2.48,
+"ldate":           9221 
+},
+{
+ "dateDecimal":        1995.25,
+"date": "1995 April",
+"driveInfo": "",
+"sizeInMb":           1200,
+"sizeInGb":            1.2,
+"cost":            680,
+"dollarsPerGb":            686,
+"predictedDollarsPerGb":         304.46,
+"logCostPerGb":           2.84,
+"predictedLogCostPerGb":           2.48,
+"ldate":           9221 
+},
+{
+ "dateDecimal":        1996.42,
+"date": "1996 June 10",
+"driveInfo": "Western Digital",
+"sizeInMb":           1600,
+"sizeInGb":            1.6,
+"cost":         399.99,
+"dollarsPerGb":            295,
+"predictedDollarsPerGb":         155.56,
+"logCostPerGb":           2.47,
+"predictedLogCostPerGb":           2.19,
+"ldate":           9648 
+},
+{
+ "dateDecimal":        1996.58,
+"date": "1996 August 14",
+"driveInfo": "IBM",
+"sizeInMb":           1760,
+"sizeInGb":           1.76,
+"cost":         379.99,
+"dollarsPerGb":            263,
+"predictedDollarsPerGb":         141.33,
+"logCostPerGb":           2.42,
+"predictedLogCostPerGb":           2.15,
+"ldate":           9709 
+},
+{
+ "dateDecimal":        1996.58,
+"date": "1996 August 14",
+"driveInfo": "Maxtor",
+"sizeInMb":           2000,
+"sizeInGb":              2,
+"cost":         439.99,
+"dollarsPerGb":            259,
+"predictedDollarsPerGb":         141.33,
+"logCostPerGb":           2.41,
+"predictedLogCostPerGb":           2.15,
+"ldate":           9709 
+},
+{
+ "dateDecimal":        1996.67,
+"date": "1996 September",
+"driveInfo": "Quantum",
+"sizeInMb":           2500,
+"sizeInGb":            2.5,
+"cost":            440,
+"dollarsPerGb":            207,
+"predictedDollarsPerGb":         134.72,
+"logCostPerGb":           2.32,
+"predictedLogCostPerGb":           2.13,
+"ldate":           9740 
+},
+{
+ "dateDecimal":        1996.67,
+"date": "1996 September",
+"driveInfo": "Quantum",
+"sizeInMb":           3200,
+"sizeInGb":            3.2,
+"cost":            469,
+"dollarsPerGb":            173,
+"predictedDollarsPerGb":         134.72,
+"logCostPerGb":           2.24,
+"predictedLogCostPerGb":           2.13,
+"ldate":           9740 
+},
+{
+ "dateDecimal":        1997.58,
+"date": "1997 August 13",
+"driveInfo": "Western Digital",
+"sizeInMb":           2100,
+"sizeInGb":            2.1,
+"cost":         329.99,
+"dollarsPerGb":            181,
+"predictedDollarsPerGb":          79.48,
+"logCostPerGb":           2.26,
+"predictedLogCostPerGb":            1.9,
+"ldate":          10074 
+},
+{
+ "dateDecimal":        1997.58,
+"date": "1997 August 13",
+"driveInfo": "Western Digital",
+"sizeInMb":           3100,
+"sizeInGb":            3.1,
+"cost":         399.99,
+"dollarsPerGb":            148,
+"predictedDollarsPerGb":          79.48,
+"logCostPerGb":           2.17,
+"predictedLogCostPerGb":            1.9,
+"ldate":          10074 
+},
+{
+ "dateDecimal":        1997.58,
+"date": "1997 August 13",
+"driveInfo": "Western Digital",
+"sizeInMb":           4000,
+"sizeInGb":              4,
+"cost":         490.99,
+"dollarsPerGb":            141,
+"predictedDollarsPerGb":          79.48,
+"logCostPerGb":           2.15,
+"predictedLogCostPerGb":            1.9,
+"ldate":          10074 
+},
+{
+ "dateDecimal":        1997.58,
+"date": "1997 August 24",
+"driveInfo": "Western Digital",
+"sizeInMb":           2100,
+"sizeInGb":            2.1,
+"cost":         279.99,
+"dollarsPerGb":            153,
+"predictedDollarsPerGb":          79.48,
+"logCostPerGb":           2.18,
+"predictedLogCostPerGb":            1.9,
+"ldate":          10074 
+},
+{
+ "dateDecimal":        1997.58,
+"date": "1997 August 24",
+"driveInfo": "Western Digital",
+"sizeInMb":           3100,
+"sizeInGb":            3.1,
+"cost":         329.99,
+"dollarsPerGb":            122,
+"predictedDollarsPerGb":          79.48,
+"logCostPerGb":           2.09,
+"predictedLogCostPerGb":            1.9,
+"ldate":          10074 
+},
+{
+ "dateDecimal":        1997.58,
+"date": "1997 August 24",
+"driveInfo": "Maxtor",
+"sizeInMb":           3500,
+"sizeInGb":            3.5,
+"cost":         359.99,
+"dollarsPerGb":            118,
+"predictedDollarsPerGb":          79.48,
+"logCostPerGb":           2.07,
+"predictedLogCostPerGb":            1.9,
+"ldate":          10074 
+},
+{
+ "dateDecimal":        1997.58,
+"date": "1997 August 24",
+"driveInfo": "Maxtor",
+"sizeInMb":           4300,
+"sizeInGb":            4.3,
+"cost":         439.99,
+"dollarsPerGb":            118,
+"predictedDollarsPerGb":          79.48,
+"logCostPerGb":           2.07,
+"predictedLogCostPerGb":            1.9,
+"ldate":          10074 
+},
+{
+ "dateDecimal":        1997.58,
+"date": "1997 August 24",
+"driveInfo": "Western Digital",
+"sizeInMb":           5100,
+"sizeInGb":            5.1,
+"cost":         459.99,
+"dollarsPerGb":            104,
+"predictedDollarsPerGb":          79.48,
+"logCostPerGb":           2.02,
+"predictedLogCostPerGb":            1.9,
+"ldate":          10074 
+},
+{
+ "dateDecimal":        1997.67,
+"date": "1997 September 5",
+"driveInfo": "Maxtor",
+"sizeInMb":           7000,
+"sizeInGb":              7,
+"cost":         669.99,
+"dollarsPerGb":            110,
+"predictedDollarsPerGb":          75.76,
+"logCostPerGb":           2.04,
+"predictedLogCostPerGb":           1.88,
+"ldate":          10105 
+},
+{
+ "dateDecimal":        1997.83,
+"date": "1997 November 29",
+"driveInfo": "Western Digital",
+"sizeInMb":           3200,
+"sizeInGb":            3.2,
+"cost":            289,
+"dollarsPerGb":            104,
+"predictedDollarsPerGb":          68.83,
+"logCostPerGb":           2.02,
+"predictedLogCostPerGb":           1.84,
+"ldate":          10166 
+},
+{
+ "dateDecimal":        1997.83,
+"date": "1997 November 29",
+"driveInfo": "Quantum",
+"sizeInMb":           3200,
+"sizeInGb":            3.2,
+"cost":            285,
+"dollarsPerGb":            102,
+"predictedDollarsPerGb":          68.83,
+"logCostPerGb":           2.01,
+"predictedLogCostPerGb":           1.84,
+"ldate":          10166 
+},
+{
+ "dateDecimal":        1997.83,
+"date": "1997 November 29",
+"driveInfo": "Quantum",
+"sizeInMb":           4300,
+"sizeInGb":            4.3,
+"cost":            379,
+"dollarsPerGb":            101,
+"predictedDollarsPerGb":          68.83,
+"logCostPerGb":              2,
+"predictedLogCostPerGb":           1.84,
+"ldate":          10166 
+},
+{
+ "dateDecimal":        1997.83,
+"date": "1997 November 29",
+"driveInfo": "Western Digital",
+"sizeInMb":           4300,
+"sizeInGb":            4.3,
+"cost":            365,
+"dollarsPerGb":           97.6,
+"predictedDollarsPerGb":          68.83,
+"logCostPerGb":           1.99,
+"predictedLogCostPerGb":           1.84,
+"ldate":          10166 
+},
+{
+ "dateDecimal":        1997.83,
+"date": "1997 November 29",
+"driveInfo": "Quantum",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            475,
+"dollarsPerGb":           85.4,
+"predictedDollarsPerGb":          68.83,
+"logCostPerGb":           1.93,
+"predictedLogCostPerGb":           1.84,
+"ldate":          10166 
+},
+{
+ "dateDecimal":        1997.83,
+"date": "1997 November 29",
+"driveInfo": "Western Digital",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            445,
+"dollarsPerGb":             80,
+"predictedDollarsPerGb":          68.83,
+"logCostPerGb":            1.9,
+"predictedLogCostPerGb":           1.84,
+"ldate":          10166 
+},
+{
+ "dateDecimal":        1997.92,
+"date": "1997 December 3",
+"driveInfo": "Western Digital",
+"sizeInMb":           5100,
+"sizeInGb":            5.1,
+"cost":         449.99,
+"dollarsPerGb":            101,
+"predictedDollarsPerGb":          65.61,
+"logCostPerGb":              2,
+"predictedLogCostPerGb":           1.82,
+"ldate":          10196 
+},
+{
+ "dateDecimal":        1997.92,
+"date": "1997 December 3",
+"driveInfo": "Quantum",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":         549.99,
+"dollarsPerGb":           98.8,
+"predictedDollarsPerGb":          65.61,
+"logCostPerGb":           1.99,
+"predictedLogCostPerGb":           1.82,
+"ldate":          10196 
+},
+{
+ "dateDecimal":        1997.92,
+"date": "1997 December 3",
+"driveInfo": "Maxtor",
+"sizeInMb":           5200,
+"sizeInGb":            5.2,
+"cost":         438.99,
+"dollarsPerGb":           97.1,
+"predictedDollarsPerGb":          65.61,
+"logCostPerGb":           1.99,
+"predictedLogCostPerGb":           1.82,
+"ldate":          10196 
+},
+{
+ "dateDecimal":        1997.92,
+"date": "1997 December 3",
+"driveInfo": "Maxtor",
+"sizeInMb":           7000,
+"sizeInGb":              7,
+"cost":         579.99,
+"dollarsPerGb":           95.3,
+"predictedDollarsPerGb":          65.61,
+"logCostPerGb":           1.98,
+"predictedLogCostPerGb":           1.82,
+"ldate":          10196 
+},
+{
+ "dateDecimal":        1997.92,
+"date": "1997 December 3",
+"driveInfo": "Maxtor",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost":         679.99,
+"dollarsPerGb":           93.1,
+"predictedDollarsPerGb":          65.61,
+"logCostPerGb":           1.97,
+"predictedLogCostPerGb":           1.82,
+"ldate":          10196 
+},
+{
+ "dateDecimal":           1998,
+"date": "1998 January 16",
+"driveInfo": "Western Digital",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":         529.99,
+"dollarsPerGb":           95.2,
+"predictedDollarsPerGb":          62.54,
+"logCostPerGb":           1.98,
+"predictedLogCostPerGb":            1.8,
+"ldate":          10227 
+},
+{
+ "dateDecimal":           1998,
+"date": "1998 January 16",
+"driveInfo": "Quantum",
+"sizeInMb":           4300,
+"sizeInGb":            4.3,
+"cost":         349.99,
+"dollarsPerGb":           93.6,
+"predictedDollarsPerGb":          62.54,
+"logCostPerGb":           1.97,
+"predictedLogCostPerGb":            1.8,
+"ldate":          10227 
+},
+{
+ "dateDecimal":           1998,
+"date": "1998 January 16",
+"driveInfo": "Quantum",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":         479.99,
+"dollarsPerGb":           86.3,
+"predictedDollarsPerGb":          62.54,
+"logCostPerGb":           1.94,
+"predictedLogCostPerGb":            1.8,
+"ldate":          10227 
+},
+{
+ "dateDecimal":           1998,
+"date": "1998 January 16",
+"driveInfo": "Maxtor",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost": null,
+"dollarsPerGb":           83.9,
+"predictedDollarsPerGb":          62.54,
+"logCostPerGb":           1.92,
+"predictedLogCostPerGb":            1.8,
+"ldate":          10227 
+},
+{
+ "dateDecimal":        1998.08,
+"date": "1998 February 3",
+"driveInfo": "",
+"sizeInMb":           5200,
+"sizeInGb":            5.2,
+"cost":            355,
+"dollarsPerGb":           78.5,
+"predictedDollarsPerGb":          59.61,
+"logCostPerGb":           1.89,
+"predictedLogCostPerGb":           1.78,
+"ldate":          10258 
+},
+{
+ "dateDecimal":        1998.08,
+"date": "1998 February 3",
+"driveInfo": "",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            435,
+"dollarsPerGb":           78.2,
+"predictedDollarsPerGb":          59.61,
+"logCostPerGb":           1.89,
+"predictedLogCostPerGb":           1.78,
+"ldate":          10258 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 2",
+"driveInfo": "Maxtor",
+"sizeInMb":           5100,
+"sizeInGb":            5.1,
+"cost":         379.99,
+"dollarsPerGb":           85.7,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.93,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 2",
+"driveInfo": "Maxtor",
+"sizeInMb":           4300,
+"sizeInGb":            4.3,
+"cost":         319.99,
+"dollarsPerGb":           85.6,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.93,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 2",
+"driveInfo": "Western Digital",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost": null,
+"dollarsPerGb":           74.3,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.87,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 2",
+"driveInfo": "Quantum",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":         339.99,
+"dollarsPerGb":           61.1,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.79,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 4",
+"driveInfo": "",
+"sizeInMb":           5200,
+"sizeInGb":            5.2,
+"cost":            349,
+"dollarsPerGb":           77.2,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.89,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 4",
+"driveInfo": "Maxtor",
+"sizeInMb":           4300,
+"sizeInGb":            4.3,
+"cost": null,
+"dollarsPerGb":           76.3,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.88,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 4",
+"driveInfo": "",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            370,
+"dollarsPerGb":           66.5,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.82,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 4",
+"driveInfo": "",
+"sizeInMb":           5200,
+"sizeInGb":            5.2,
+"cost":            300,
+"dollarsPerGb":           66.3,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.82,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 4",
+"driveInfo": "",
+"sizeInMb":           9000,
+"sizeInGb":              9,
+"cost":            499,
+"dollarsPerGb":           63.8,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":            1.8,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 17",
+"driveInfo": "Fujitsu",
+"sizeInMb":           4300,
+"sizeInGb":            4.3,
+"cost":            282,
+"dollarsPerGb":           75.4,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.88,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 17",
+"driveInfo": "Fujitsu",
+"sizeInMb":           5200,
+"sizeInGb":            5.2,
+"cost":            331,
+"dollarsPerGb":           73.2,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.86,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.25,
+"date": "1998 April 17",
+"driveInfo": "Fujitsu",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            368,
+"dollarsPerGb":           66.1,
+"predictedDollarsPerGb":          54.15,
+"logCostPerGb":           1.82,
+"predictedLogCostPerGb":           1.73,
+"ldate":          10317 
+},
+{
+ "dateDecimal":        1998.33,
+"date": "1998 May 2",
+"driveInfo": "Seagate",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":         349.99,
+"dollarsPerGb":           62.9,
+"predictedDollarsPerGb":          51.62,
+"logCostPerGb":            1.8,
+"predictedLogCostPerGb":           1.71,
+"ldate":          10347 
+},
+{
+ "dateDecimal":        1998.33,
+"date": "1998 May 9",
+"driveInfo": "Seagate",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":         329.99,
+"dollarsPerGb":           59.3,
+"predictedDollarsPerGb":          51.62,
+"logCostPerGb":           1.77,
+"predictedLogCostPerGb":           1.71,
+"ldate":          10347 
+},
+{
+ "dateDecimal":        1998.33,
+"date": "1998 May 11",
+"driveInfo": "Fujitsu",
+"sizeInMb":           3200,
+"sizeInGb":            3.2,
+"cost":            227,
+"dollarsPerGb":           81.6,
+"predictedDollarsPerGb":          51.62,
+"logCostPerGb":           1.91,
+"predictedLogCostPerGb":           1.71,
+"ldate":          10347 
+},
+{
+ "dateDecimal":        1998.33,
+"date": "1998 May 11",
+"driveInfo": "Fujitsu",
+"sizeInMb":           4300,
+"sizeInGb":            4.3,
+"cost":            257,
+"dollarsPerGb":           68.7,
+"predictedDollarsPerGb":          51.62,
+"logCostPerGb":           1.84,
+"predictedLogCostPerGb":           1.71,
+"ldate":          10347 
+},
+{
+ "dateDecimal":        1998.33,
+"date": "1998 May 11",
+"driveInfo": "Fujitsu",
+"sizeInMb":           5200,
+"sizeInGb":            5.2,
+"cost":            299,
+"dollarsPerGb":           66.1,
+"predictedDollarsPerGb":          51.62,
+"logCostPerGb":           1.82,
+"predictedLogCostPerGb":           1.71,
+"ldate":          10347 
+},
+{
+ "dateDecimal":        1998.33,
+"date": "1998 May 11",
+"driveInfo": "Fujitsu",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            328,
+"dollarsPerGb":           58.9,
+"predictedDollarsPerGb":          51.62,
+"logCostPerGb":           1.77,
+"predictedLogCostPerGb":           1.71,
+"ldate":          10347 
+},
+{
+ "dateDecimal":        1998.42,
+"date": "1998 June 6",
+"driveInfo": "Maxtor",
+"sizeInMb":           5700,
+"sizeInGb":            5.7,
+"cost":         299.99,
+"dollarsPerGb":           60.5,
+"predictedDollarsPerGb":           49.2,
+"logCostPerGb":           1.78,
+"predictedLogCostPerGb":           1.69,
+"ldate":          10378 
+},
+{
+ "dateDecimal":        1998.42,
+"date": "1998 June 12",
+"driveInfo": "Quantum",
+"sizeInMb":           4300,
+"sizeInGb":            4.3,
+"cost":            228,
+"dollarsPerGb":             61,
+"predictedDollarsPerGb":           49.2,
+"logCostPerGb":           1.79,
+"predictedLogCostPerGb":           1.69,
+"ldate":          10378 
+},
+{
+ "dateDecimal":        1998.42,
+"date": "1998 June 12",
+"driveInfo": "Quantum",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            298,
+"dollarsPerGb":           53.5,
+"predictedDollarsPerGb":           49.2,
+"logCostPerGb":           1.73,
+"predictedLogCostPerGb":           1.69,
+"ldate":          10378 
+},
+{
+ "dateDecimal":         1998.5,
+"date": "1998 July 15",
+"driveInfo": "",
+"sizeInMb":           5200,
+"sizeInGb":            5.2,
+"cost":            249,
+"dollarsPerGb":           55.1,
+"predictedDollarsPerGb":           46.9,
+"logCostPerGb":           1.74,
+"predictedLogCostPerGb":           1.67,
+"ldate":          10408 
+},
+{
+ "dateDecimal":         1998.5,
+"date": "1998 July 31",
+"driveInfo": "Western Digital IDE",
+"sizeInMb":           5100,
+"sizeInGb":            5.1,
+"cost":            262,
+"dollarsPerGb":           59.1,
+"predictedDollarsPerGb":           46.9,
+"logCostPerGb":           1.77,
+"predictedLogCostPerGb":           1.67,
+"ldate":          10408 
+},
+{
+ "dateDecimal":         1998.5,
+"date": "1998 July 31",
+"driveInfo": "Fujitsu IDE",
+"sizeInMb":           5200,
+"sizeInGb":            5.2,
+"cost":            252,
+"dollarsPerGb":           55.7,
+"predictedDollarsPerGb":           46.9,
+"logCostPerGb":           1.75,
+"predictedLogCostPerGb":           1.67,
+"ldate":          10408 
+},
+{
+ "dateDecimal":         1998.5,
+"date": "1998 July 31",
+"driveInfo": "Western Digital IDE",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            294,
+"dollarsPerGb":           52.8,
+"predictedDollarsPerGb":           46.9,
+"logCostPerGb":           1.72,
+"predictedLogCostPerGb":           1.67,
+"ldate":          10408 
+},
+{
+ "dateDecimal":         1998.5,
+"date": "1998 July 31",
+"driveInfo": "Western Digital IDE",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost":            382,
+"dollarsPerGb":           52.3,
+"predictedDollarsPerGb":           46.9,
+"logCostPerGb":           1.72,
+"predictedLogCostPerGb":           1.67,
+"ldate":          10408 
+},
+{
+ "dateDecimal":         1998.5,
+"date": "1998 July 31",
+"driveInfo": "Fujitsu IDE",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            291,
+"dollarsPerGb":           52.3,
+"predictedDollarsPerGb":           46.9,
+"logCostPerGb":           1.72,
+"predictedLogCostPerGb":           1.67,
+"ldate":          10408 
+},
+{
+ "dateDecimal":        1998.58,
+"date": "1998 August 1",
+"driveInfo": "Western Digital EIDE",
+"sizeInMb":           4000,
+"sizeInGb":              4,
+"cost": null,
+"dollarsPerGb":           54.6,
+"predictedDollarsPerGb":           44.7,
+"logCostPerGb":           1.74,
+"predictedLogCostPerGb":           1.65,
+"ldate":          10439 
+},
+{
+ "dateDecimal":        1998.58,
+"date": "1998 August 6",
+"driveInfo": "Western Digital EIDE",
+"sizeInMb":           5100,
+"sizeInGb":            5.1,
+"cost": null,
+"dollarsPerGb":           46.4,
+"predictedDollarsPerGb":           44.7,
+"logCostPerGb":           1.67,
+"predictedLogCostPerGb":           1.65,
+"ldate":          10439 
+},
+{
+ "dateDecimal":        1998.58,
+"date": "1998 August 14",
+"driveInfo": "Fujitsu",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":            289,
+"dollarsPerGb":           51.9,
+"predictedDollarsPerGb":           44.7,
+"logCostPerGb":           1.72,
+"predictedLogCostPerGb":           1.65,
+"ldate":          10439 
+},
+{
+ "dateDecimal":        1998.58,
+"date": "1998 August 26",
+"driveInfo": "Seagate",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":         279.99,
+"dollarsPerGb":           50.3,
+"predictedDollarsPerGb":           44.7,
+"logCostPerGb":            1.7,
+"predictedLogCostPerGb":           1.65,
+"ldate":          10439 
+},
+{
+ "dateDecimal":        1998.67,
+"date": "1998 September 1",
+"driveInfo": "Maxtor UDMA",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost":         379.99,
+"dollarsPerGb":             52,
+"predictedDollarsPerGb":          42.61,
+"logCostPerGb":           1.72,
+"predictedLogCostPerGb":           1.63,
+"ldate":          10470 
+},
+{
+ "dateDecimal":        1998.67,
+"date": "1998 September 1",
+"driveInfo": "Maxtor UDMA",
+"sizeInMb":           6800,
+"sizeInGb":            6.8,
+"cost":         279.99,
+"dollarsPerGb":           47.4,
+"predictedDollarsPerGb":          42.61,
+"logCostPerGb":           1.68,
+"predictedLogCostPerGb":           1.63,
+"ldate":          10470 
+},
+{
+ "dateDecimal":        1998.67,
+"date": "1998 September 10",
+"driveInfo": "Western Digital EIDE",
+"sizeInMb":           5100,
+"sizeInGb":            5.1,
+"cost": null,
+"dollarsPerGb":           47.9,
+"predictedDollarsPerGb":          42.61,
+"logCostPerGb":           1.68,
+"predictedLogCostPerGb":           1.63,
+"ldate":          10470 
+},
+{
+ "dateDecimal":        1998.75,
+"date": "1998 October 1",
+"driveInfo": "Quantum",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost": null,
+"dollarsPerGb":           42.6,
+"predictedDollarsPerGb":          40.61,
+"logCostPerGb":           1.63,
+"predictedLogCostPerGb":           1.61,
+"ldate":          10500 
+},
+{
+ "dateDecimal":        1999.08,
+"date": "1999 February 12",
+"driveInfo": "Quantum",
+"sizeInMb":           8000,
+"sizeInGb":              8,
+"cost":         299.99,
+"dollarsPerGb":           43.1,
+"predictedDollarsPerGb":          33.52,
+"logCostPerGb":           1.63,
+"predictedLogCostPerGb":           1.53,
+"ldate":          10623 
+},
+{
+ "dateDecimal":        1999.08,
+"date": "1999 February 26",
+"driveInfo": "Maxtor",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost": null,
+"dollarsPerGb":           37.7,
+"predictedDollarsPerGb":          33.52,
+"logCostPerGb":           1.58,
+"predictedLogCostPerGb":           1.53,
+"ldate":          10623 
+},
+{
+ "dateDecimal":        1999.08,
+"date": "1999 February 26",
+"driveInfo": "Quantum",
+"sizeInMb":           8000,
+"sizeInGb":              8,
+"cost": null,
+"dollarsPerGb":           36.5,
+"predictedDollarsPerGb":          33.52,
+"logCostPerGb":           1.56,
+"predictedLogCostPerGb":           1.53,
+"ldate":          10623 
+},
+{
+ "dateDecimal":        1999.08,
+"date": "1999 February 27",
+"driveInfo": "Quantum",
+"sizeInMb":          19200,
+"sizeInGb":           19.2,
+"cost":         512.46,
+"dollarsPerGb":           30.7,
+"predictedDollarsPerGb":          33.52,
+"logCostPerGb":           1.49,
+"predictedLogCostPerGb":           1.53,
+"ldate":          10623 
+},
+{
+ "dateDecimal":        1999.17,
+"date": "1999 March 1",
+"driveInfo": "Fujitsu Ultra DMA",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost":            253,
+"dollarsPerGb":           34.6,
+"predictedDollarsPerGb":          31.95,
+"logCostPerGb":           1.54,
+"predictedLogCostPerGb":            1.5,
+"ldate":          10651 
+},
+{
+ "dateDecimal":        1999.17,
+"date": "1999 March 1",
+"driveInfo": "Fujitsu Ultra DMA",
+"sizeInMb":          10200,
+"sizeInGb":           10.2,
+"cost":            299,
+"dollarsPerGb":           33.7,
+"predictedDollarsPerGb":          31.95,
+"logCostPerGb":           1.53,
+"predictedLogCostPerGb":            1.5,
+"ldate":          10651 
+},
+{
+ "dateDecimal":        1999.17,
+"date": "1999 March 3",
+"driveInfo": "Fujitsu Ultra DMA",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost":            235,
+"dollarsPerGb":           32.2,
+"predictedDollarsPerGb":          31.95,
+"logCostPerGb":           1.51,
+"predictedLogCostPerGb":            1.5,
+"ldate":          10651 
+},
+{
+ "dateDecimal":        1999.17,
+"date": "1999 March 3",
+"driveInfo": "Fujitsu Ultra DMA",
+"sizeInMb":          10200,
+"sizeInGb":           10.2,
+"cost":            285,
+"dollarsPerGb":           32.1,
+"predictedDollarsPerGb":          31.95,
+"logCostPerGb":           1.51,
+"predictedLogCostPerGb":            1.5,
+"ldate":          10651 
+},
+{
+ "dateDecimal":        1999.25,
+"date": "1999 April 1",
+"driveInfo": "Fujitsu UDMA",
+"sizeInMb":          10200,
+"sizeInGb":           10.2,
+"cost":            279,
+"dollarsPerGb":           31.5,
+"predictedDollarsPerGb":          30.46,
+"logCostPerGb":            1.5,
+"predictedLogCostPerGb":           1.48,
+"ldate":          10682 
+},
+{
+ "dateDecimal":        1999.25,
+"date": "1999 April 1",
+"driveInfo": "Fujitsu UDMA",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost":            229,
+"dollarsPerGb":           31.4,
+"predictedDollarsPerGb":          30.46,
+"logCostPerGb":            1.5,
+"predictedLogCostPerGb":           1.48,
+"ldate":          10682 
+},
+{
+ "dateDecimal":        1999.33,
+"date": "1999 May 21",
+"driveInfo": "Fujitsu UDMA",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":         179.99,
+"dollarsPerGb":           32.3,
+"predictedDollarsPerGb":          29.03,
+"logCostPerGb":           1.51,
+"predictedLogCostPerGb":           1.46,
+"ldate":          10712 
+},
+{
+ "dateDecimal":        1999.33,
+"date": "1999 May 27",
+"driveInfo": "Fujitsu UDMA",
+"sizeInMb":          10200,
+"sizeInGb":           10.2,
+"cost":            245,
+"dollarsPerGb":           27.6,
+"predictedDollarsPerGb":          29.03,
+"logCostPerGb":           1.44,
+"predictedLogCostPerGb":           1.46,
+"ldate":          10712 
+},
+{
+ "dateDecimal":        1999.33,
+"date": "1999 May 27",
+"driveInfo": "Fujitsu UDMA",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost":            198,
+"dollarsPerGb":           27.1,
+"predictedDollarsPerGb":          29.03,
+"logCostPerGb":           1.43,
+"predictedLogCostPerGb":           1.46,
+"ldate":          10712 
+},
+{
+ "dateDecimal":        1999.33,
+"date": "1999 May 27",
+"driveInfo": "Fujitsu UDMA",
+"sizeInMb":          17300,
+"sizeInGb":           17.3,
+"cost":            369,
+"dollarsPerGb":           24.5,
+"predictedDollarsPerGb":          29.03,
+"logCostPerGb":           1.39,
+"predictedLogCostPerGb":           1.46,
+"ldate":          10712 
+},
+{
+ "dateDecimal":        1999.33,
+"date": "1999 May 28",
+"driveInfo": "Maxtor UDMA",
+"sizeInMb":          10000,
+"sizeInGb":             10,
+"cost":         249.99,
+"dollarsPerGb":           28.8,
+"predictedDollarsPerGb":          29.03,
+"logCostPerGb":           1.46,
+"predictedLogCostPerGb":           1.46,
+"ldate":          10712 
+},
+{
+ "dateDecimal":         1999.5,
+"date": "1999 July 21",
+"driveInfo": "Maxtor Ultra DMA",
+"sizeInMb":           8400,
+"sizeInGb":            8.4,
+"cost":         199.99,
+"dollarsPerGb":           27.4,
+"predictedDollarsPerGb":          26.37,
+"logCostPerGb":           1.44,
+"predictedLogCostPerGb":           1.42,
+"ldate":          10773 
+},
+{
+ "dateDecimal":         1999.5,
+"date": "1999 July 30",
+"driveInfo": "Fujitsu UDMA",
+"sizeInMb":           6400,
+"sizeInGb":            6.4,
+"cost":         139.99,
+"dollarsPerGb":           26.3,
+"predictedDollarsPerGb":          26.37,
+"logCostPerGb":           1.42,
+"predictedLogCostPerGb":           1.42,
+"ldate":          10773 
+},
+{
+ "dateDecimal":        1999.67,
+"date": "1999 September 25",
+"driveInfo": "",
+"sizeInMb":          10200,
+"sizeInGb":           10.2,
+"cost": null,
+"dollarsPerGb":           18.5,
+"predictedDollarsPerGb":          23.96,
+"logCostPerGb":           1.27,
+"predictedLogCostPerGb":           1.38,
+"ldate":          10835 
+},
+{
+ "dateDecimal":        1999.75,
+"date": "1999 October 1",
+"driveInfo": "Quantum CX UTA 66",
+"sizeInMb":          10200,
+"sizeInGb":           10.2,
+"cost":            199,
+"dollarsPerGb":           22.4,
+"predictedDollarsPerGb":          22.84,
+"logCostPerGb":           1.35,
+"predictedLogCostPerGb":           1.36,
+"ldate":          10865 
+},
+{
+ "dateDecimal":        1999.75,
+"date": "1999 October 1",
+"driveInfo": "Quantum KA 7200 rpm",
+"sizeInMb":          13600,
+"sizeInGb":           13.6,
+"cost":            249,
+"dollarsPerGb":           21.1,
+"predictedDollarsPerGb":          22.84,
+"logCostPerGb":           1.32,
+"predictedLogCostPerGb":           1.36,
+"ldate":          10865 
+},
+{
+ "dateDecimal":        1999.75,
+"date": "1999 October 1",
+"driveInfo": "Western Digital",
+"sizeInMb":          20000,
+"sizeInGb":             20,
+"cost":            359,
+"dollarsPerGb":           20.6,
+"predictedDollarsPerGb":          22.84,
+"logCostPerGb":           1.31,
+"predictedLogCostPerGb":           1.36,
+"ldate":          10865 
+},
+{
+ "dateDecimal":        1999.75,
+"date": "1999 October 1",
+"driveInfo": "Western Digital 7200 rpm",
+"sizeInMb":          27300,
+"sizeInGb":           27.3,
+"cost":            489,
+"dollarsPerGb":           20.6,
+"predictedDollarsPerGb":          22.84,
+"logCostPerGb":           1.31,
+"predictedLogCostPerGb":           1.36,
+"ldate":          10865 
+},
+{
+ "dateDecimal":        1999.75,
+"date": "1999 October 1",
+"driveInfo": "Quantum CX UTA 66",
+"sizeInMb":          13600,
+"sizeInGb":           13.6,
+"cost":            219,
+"dollarsPerGb":           18.5,
+"predictedDollarsPerGb":          22.84,
+"logCostPerGb":           1.27,
+"predictedLogCostPerGb":           1.36,
+"ldate":          10865 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "Western Digital IDE",
+"sizeInMb":          20500,
+"sizeInGb":           20.5,
+"cost":            398,
+"dollarsPerGb":           22.3,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.35,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "Quantum IDE",
+"sizeInMb":          18200,
+"sizeInGb":           18.2,
+"cost":            348,
+"dollarsPerGb":             22,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.34,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "",
+"sizeInMb":          10200,
+"sizeInGb":           10.2,
+"cost":            189,
+"dollarsPerGb":           21.3,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.33,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "Fujitsu IDE",
+"sizeInMb":          10200,
+"sizeInGb":           10.2,
+"cost":            189,
+"dollarsPerGb":           21.3,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.33,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "Fujitsu IDE",
+"sizeInMb":          13000,
+"sizeInGb":             13,
+"cost":            208,
+"dollarsPerGb":           18.4,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.26,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "",
+"sizeInMb":          13000,
+"sizeInGb":             13,
+"cost":            195,
+"dollarsPerGb":           17.3,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.24,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "Fujitsu IDE",
+"sizeInMb":          20400,
+"sizeInGb":           20.4,
+"cost":            299,
+"dollarsPerGb":           16.9,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.23,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "Fujitsu IDE",
+"sizeInMb":          17300,
+"sizeInGb":           17.3,
+"cost":            248,
+"dollarsPerGb":           16.5,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.22,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "Fujitsu IDE",
+"sizeInMb":          27300,
+"sizeInGb":           27.3,
+"cost":            388,
+"dollarsPerGb":           16.3,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.21,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        1999.92,
+"date": "1999 December 1",
+"driveInfo": "",
+"sizeInMb":          17300,
+"sizeInGb":           17.3,
+"cost":            225,
+"dollarsPerGb":             15,
+"predictedDollarsPerGb":          20.75,
+"logCostPerGb":           1.18,
+"predictedLogCostPerGb":           1.32,
+"ldate":          10926 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "",
+"sizeInMb":          10200,
+"sizeInGb":           10.2,
+"cost":            175,
+"dollarsPerGb":           19.7,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":           1.29,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "Fujitsu",
+"sizeInMb":          20400,
+"sizeInGb":           20.4,
+"cost":            299,
+"dollarsPerGb":           16.9,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":           1.23,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "Fujitsu",
+"sizeInMb":          13600,
+"sizeInGb":           13.6,
+"cost":            199,
+"dollarsPerGb":           16.8,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":           1.23,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "",
+"sizeInMb":          12900,
+"sizeInGb":           12.9,
+"cost":         187.99,
+"dollarsPerGb":           16.8,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":           1.23,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "Fujitsu",
+"sizeInMb":          13600,
+"sizeInGb":           13.6,
+"cost":          197.8,
+"dollarsPerGb":           16.7,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":           1.22,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "",
+"sizeInMb":          13000,
+"sizeInGb":             13,
+"cost":            186,
+"dollarsPerGb":           16.5,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":           1.22,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "Fujitsu",
+"sizeInMb":          17300,
+"sizeInGb":           17.3,
+"cost":            238,
+"dollarsPerGb":           15.8,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":            1.2,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "Fujitsu",
+"sizeInMb":          27300,
+"sizeInGb":           27.3,
+"cost":            375,
+"dollarsPerGb":           15.8,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":            1.2,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "Fujitsu",
+"sizeInMb":          17300,
+"sizeInGb":           17.3,
+"cost":          232.3,
+"dollarsPerGb":           15.4,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":           1.19,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "",
+"sizeInMb":          17300,
+"sizeInGb":           17.3,
+"cost":            215,
+"dollarsPerGb":           14.3,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":           1.16,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.08,
+"date": "2000 February 1",
+"driveInfo": "",
+"sizeInMb":          20400,
+"sizeInGb":           20.4,
+"cost":         211.99,
+"dollarsPerGb":             12,
+"predictedDollarsPerGb":          18.85,
+"logCostPerGb":           1.08,
+"predictedLogCostPerGb":           1.28,
+"ldate":          10988 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "IBM",
+"sizeInMb":          20500,
+"sizeInGb":           20.5,
+"cost":            279,
+"dollarsPerGb":           15.7,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":            1.2,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Maxtor",
+"sizeInMb":          15200,
+"sizeInGb":           15.2,
+"cost":            199,
+"dollarsPerGb":           15.1,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.18,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Maxtor 7200 rpm",
+"sizeInMb":          20000,
+"sizeInGb":             20,
+"cost":            259,
+"dollarsPerGb":           14.9,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.17,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Maxtor UDMA",
+"sizeInMb":          15000,
+"sizeInGb":             15,
+"cost":            192,
+"dollarsPerGb":           14.7,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.17,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Seagate UDMA",
+"sizeInMb":          17200,
+"sizeInGb":           17.2,
+"cost":            218,
+"dollarsPerGb":           14.6,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.16,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Seagate UDMA",
+"sizeInMb":          28000,
+"sizeInGb":             28,
+"cost":            349,
+"dollarsPerGb":           14.3,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.16,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "",
+"sizeInMb":          17300,
+"sizeInGb":           17.3,
+"cost":            215,
+"dollarsPerGb":           14.3,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.16,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "IBM UDMA 5400 rpm",
+"sizeInMb":          20300,
+"sizeInGb":           20.3,
+"cost":            245,
+"dollarsPerGb":           13.9,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.14,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Maxtor UDMA",
+"sizeInMb":          17000,
+"sizeInGb":             17,
+"cost":            204,
+"dollarsPerGb":           13.8,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.14,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Maxtor 7200 rpm",
+"sizeInMb":          27000,
+"sizeInGb":             27,
+"cost":            320,
+"dollarsPerGb":           13.6,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.13,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "",
+"sizeInMb":          20400,
+"sizeInGb":           20.4,
+"cost":            239,
+"dollarsPerGb":           13.5,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.13,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Maxtor UDMA",
+"sizeInMb":          36500,
+"sizeInGb":           36.5,
+"cost":            411,
+"dollarsPerGb":             13,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.11,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Maxtor UDMA",
+"sizeInMb":          27000,
+"sizeInGb":             27,
+"cost":            299,
+"dollarsPerGb":           12.7,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":            1.1,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Western Digital UDMA",
+"sizeInMb":          20000,
+"sizeInGb":             20,
+"cost":            218,
+"dollarsPerGb":           12.5,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":            1.1,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Maxtor UDMA",
+"sizeInMb":          20000,
+"sizeInGb":             20,
+"cost":            217,
+"dollarsPerGb":           12.5,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":            1.1,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.25,
+"date": "2000 April 1",
+"driveInfo": "Maxtor UDMA",
+"sizeInMb":          30000,
+"sizeInGb":             30,
+"cost":            308,
+"dollarsPerGb":           11.8,
+"predictedDollarsPerGb":          17.13,
+"logCostPerGb":           1.07,
+"predictedLogCostPerGb":           1.23,
+"ldate":          11048 
+},
+{
+ "dateDecimal":        2000.33,
+"date": "2000 May 12",
+"driveInfo": "Western Digital Ultra ATA/66 5400 rpm",
+"sizeInMb":          13600,
+"sizeInGb":           13.6,
+"cost":         179.99,
+"dollarsPerGb":           15.2,
+"predictedDollarsPerGb":          16.33,
+"logCostPerGb":           1.18,
+"predictedLogCostPerGb":           1.21,
+"ldate":          11078 
+},
+{
+ "dateDecimal":        2000.33,
+"date": "2000 May 12",
+"driveInfo": "Maxtor UDMA/66 7200 rpm",
+"sizeInMb":          30000,
+"sizeInGb":             30,
+"cost":         319.99,
+"dollarsPerGb":           12.3,
+"predictedDollarsPerGb":          16.33,
+"logCostPerGb":           1.09,
+"predictedLogCostPerGb":           1.21,
+"ldate":          11078 
+},
+{
+ "dateDecimal":        2000.33,
+"date": "2000 May 12",
+"driveInfo": "Maxtor UDMA/66 7200 rpm",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":         399.99,
+"dollarsPerGb":           11.5,
+"predictedDollarsPerGb":          16.33,
+"logCostPerGb":           1.06,
+"predictedLogCostPerGb":           1.21,
+"ldate":          11078 
+},
+{
+ "dateDecimal":        2000.42,
+"date": "2000 June 2",
+"driveInfo": "Maxtor UDMA/66 5400 rpm",
+"sizeInMb":          15000,
+"sizeInGb":             15,
+"cost":         189.99,
+"dollarsPerGb":           14.6,
+"predictedDollarsPerGb":          15.56,
+"logCostPerGb":           1.16,
+"predictedLogCostPerGb":           1.19,
+"ldate":          11109 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 1",
+"driveInfo": "Samsung",
+"sizeInMb":          15000,
+"sizeInGb":             15,
+"cost":            162,
+"dollarsPerGb":           12.4,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":           1.09,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 1",
+"driveInfo": "Maxtor IDE 7200rpm",
+"sizeInMb":          30500,
+"sizeInGb":           30.5,
+"cost":            298,
+"dollarsPerGb":           11.2,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":           1.05,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 1",
+"driveInfo": "Samsung",
+"sizeInMb":          20000,
+"sizeInGb":             20,
+"cost":            175,
+"dollarsPerGb":           10.1,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":              1,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 19-20",
+"driveInfo": "Maxtor 7200rpm 9ms",
+"sizeInMb":          40900,
+"sizeInGb":           40.9,
+"cost":            388,
+"dollarsPerGb":           10.9,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":           1.04,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 19-20",
+"driveInfo": "Maxtor 5400rpm",
+"sizeInMb":          15300,
+"sizeInGb":           15.3,
+"cost":            144,
+"dollarsPerGb":           10.8,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":           1.03,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 19-20",
+"driveInfo": "Maxtor 7200rpm 9ms",
+"sizeInMb":          30700,
+"sizeInGb":           30.7,
+"cost":            278,
+"dollarsPerGb":           10.4,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":           1.02,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 19-20",
+"driveInfo": "Maxtor 5400rpm",
+"sizeInMb":          20400,
+"sizeInGb":           20.4,
+"cost":            164,
+"dollarsPerGb":           9.25,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":           0.97,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 19-20",
+"driveInfo": "Maxtor 5400rpm",
+"sizeInMb":          30700,
+"sizeInGb":           30.7,
+"cost":            214,
+"dollarsPerGb":           8.02,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":            0.9,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 25",
+"driveInfo": "Maxtor 5400rpm",
+"sizeInMb":          15000,
+"sizeInGb":             15,
+"cost":         149.99,
+"dollarsPerGb":           11.5,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":           1.06,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 25",
+"driveInfo": "Maxtor 7200rpm",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":         349.99,
+"dollarsPerGb":           10.1,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":              1,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.58,
+"date": "2000 August 25",
+"driveInfo": "Maxtor 7200rpm UDMA/66",
+"sizeInMb":          30000,
+"sizeInGb":             30,
+"cost":         249.99,
+"dollarsPerGb":           9.58,
+"predictedDollarsPerGb":          14.14,
+"logCostPerGb":           0.98,
+"predictedLogCostPerGb":           1.15,
+"ldate":          11170 
+},
+{
+ "dateDecimal":        2000.75,
+"date": "2000 October 27",
+"driveInfo": "Maxtor 7200rpm",
+"sizeInMb":          30700,
+"sizeInGb":           30.7,
+"cost":            244,
+"dollarsPerGb":           9.17,
+"predictedDollarsPerGb":          12.84,
+"logCostPerGb":           0.96,
+"predictedLogCostPerGb":           1.11,
+"ldate":          11231 
+},
+{
+ "dateDecimal":        2000.75,
+"date": "2000 October 27",
+"driveInfo": "Maxtor 7200rpm",
+"sizeInMb":          40900,
+"sizeInGb":           40.9,
+"cost":            318,
+"dollarsPerGb":           8.93,
+"predictedDollarsPerGb":          12.84,
+"logCostPerGb":           0.95,
+"predictedLogCostPerGb":           1.11,
+"ldate":          11231 
+},
+{
+ "dateDecimal":        2000.75,
+"date": "2000 October 27",
+"driveInfo": "Maxtor 5400rpm",
+"sizeInMb":          61400,
+"sizeInGb":           61.4,
+"cost":            398,
+"dollarsPerGb":           7.46,
+"predictedDollarsPerGb":          12.84,
+"logCostPerGb":           0.87,
+"predictedLogCostPerGb":           1.11,
+"ldate":          11231 
+},
+{
+ "dateDecimal":        2000.75,
+"date": "2000 October 27",
+"driveInfo": "Maxtor 5400rpm",
+"sizeInMb":          81900,
+"sizeInGb":           81.9,
+"cost":            518,
+"dollarsPerGb":            7.3,
+"predictedDollarsPerGb":          12.84,
+"logCostPerGb":           0.86,
+"predictedLogCostPerGb":           1.11,
+"ldate":          11231 
+},
+{
+ "dateDecimal":        2000.75,
+"date": "2000 October 27",
+"driveInfo": "Maxtor 5400rpm",
+"sizeInMb":          30700,
+"sizeInGb":           30.7,
+"cost":            194,
+"dollarsPerGb":           7.25,
+"predictedDollarsPerGb":          12.84,
+"logCostPerGb":           0.86,
+"predictedLogCostPerGb":           1.11,
+"ldate":          11231 
+},
+{
+ "dateDecimal":        2000.75,
+"date": "2000 October 27",
+"driveInfo": "Maxtor 5400rpm",
+"sizeInMb":          40900,
+"sizeInGb":           40.9,
+"cost":            254,
+"dollarsPerGb":           7.14,
+"predictedDollarsPerGb":          12.84,
+"logCostPerGb":           0.85,
+"predictedLogCostPerGb":           1.11,
+"ldate":          11231 
+},
+{
+ "dateDecimal":        2000.83,
+"date": "2000 November 1",
+"driveInfo": "Maxtor 7200rpm UDMA/66",
+"sizeInMb":          30000,
+"sizeInGb":             30,
+"cost": null,
+"dollarsPerGb":           7.87,
+"predictedDollarsPerGb":          12.24,
+"logCostPerGb":            0.9,
+"predictedLogCostPerGb":           1.09,
+"ldate":          11262 
+},
+{
+ "dateDecimal":        2000.92,
+"date": "2000 December 13",
+"driveInfo": "Samsung",
+"sizeInMb":          30000,
+"sizeInGb":             30,
+"cost":            189,
+"dollarsPerGb":           7.25,
+"predictedDollarsPerGb":          11.67,
+"logCostPerGb":           0.86,
+"predictedLogCostPerGb":           1.07,
+"ldate":          11292 
+},
+{
+ "dateDecimal":        2000.92,
+"date": "2000 December 20",
+"driveInfo": "Maxtor Ultra ATA 66 5400 rpm",
+"sizeInMb":          80000,
+"sizeInGb":             80,
+"cost":         479.99,
+"dollarsPerGb":            6.9,
+"predictedDollarsPerGb":          11.67,
+"logCostPerGb":           0.84,
+"predictedLogCostPerGb":           1.07,
+"ldate":          11292 
+},
+{
+ "dateDecimal":           2001,
+"date": "2001 January 14",
+"driveInfo": "5400 rpm",
+"sizeInMb":          61000,
+"sizeInGb":             61,
+"cost":            388,
+"dollarsPerGb":            7.3,
+"predictedDollarsPerGb":          11.12,
+"logCostPerGb":           0.86,
+"predictedLogCostPerGb":           1.05,
+"ldate":          11323 
+},
+{
+ "dateDecimal":           2001,
+"date": "2001 January 14",
+"driveInfo": "5400 rpm",
+"sizeInMb":          82000,
+"sizeInGb":             82,
+"cost":            518,
+"dollarsPerGb":           7.25,
+"predictedDollarsPerGb":          11.12,
+"logCostPerGb":           0.86,
+"predictedLogCostPerGb":           1.05,
+"ldate":          11323 
+},
+{
+ "dateDecimal":           2001,
+"date": "2001 January 14",
+"driveInfo": "5400 rpm",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":            238,
+"dollarsPerGb":           6.85,
+"predictedDollarsPerGb":          11.12,
+"logCostPerGb":           0.84,
+"predictedLogCostPerGb":           1.05,
+"ldate":          11323 
+},
+{
+ "dateDecimal":        2001.25,
+"date": "2001 April 25",
+"driveInfo": "Quantum 7200 rpm",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":            260,
+"dollarsPerGb":           7.46,
+"predictedDollarsPerGb":           9.63,
+"logCostPerGb":           0.87,
+"predictedLogCostPerGb":           0.98,
+"ldate":          11413 
+},
+{
+ "dateDecimal":        2001.25,
+"date": "2001 April 25",
+"driveInfo": "Fujitsu 5400 rpm UDMA-100",
+"sizeInMb":          30000,
+"sizeInGb":             30,
+"cost":            169,
+"dollarsPerGb":           6.49,
+"predictedDollarsPerGb":           9.63,
+"logCostPerGb":           0.81,
+"predictedLogCostPerGb":           0.98,
+"ldate":          11413 
+},
+{
+ "dateDecimal":        2001.25,
+"date": "2001 April 25",
+"driveInfo": "Fujitsu 5400 rpm UDMA-100",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":            199,
+"dollarsPerGb":           5.71,
+"predictedDollarsPerGb":           9.63,
+"logCostPerGb":           0.76,
+"predictedLogCostPerGb":           0.98,
+"ldate":          11413 
+},
+{
+ "dateDecimal":        2001.33,
+"date": "2001 May 1",
+"driveInfo": "5400 rpm",
+"sizeInMb":          30000,
+"sizeInGb":             30,
+"cost":            178,
+"dollarsPerGb":            6.8,
+"predictedDollarsPerGb":           9.18,
+"logCostPerGb":           0.83,
+"predictedLogCostPerGb":           0.96,
+"ldate":          11443 
+},
+{
+ "dateDecimal":        2001.33,
+"date": "2001 May 1",
+"driveInfo": "5400 rpm",
+"sizeInMb":          82000,
+"sizeInGb":             82,
+"cost":            468,
+"dollarsPerGb":           6.58,
+"predictedDollarsPerGb":           9.18,
+"logCostPerGb":           0.82,
+"predictedLogCostPerGb":           0.96,
+"ldate":          11443 
+},
+{
+ "dateDecimal":        2001.33,
+"date": "2001 May 1",
+"driveInfo": "5400 rpm",
+"sizeInMb":          61000,
+"sizeInGb":             61,
+"cost":            344,
+"dollarsPerGb":           6.49,
+"predictedDollarsPerGb":           9.18,
+"logCostPerGb":           0.81,
+"predictedLogCostPerGb":           0.96,
+"ldate":          11443 
+},
+{
+ "dateDecimal":        2001.33,
+"date": "2001 May 1",
+"driveInfo": "5400 rpm",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":            204,
+"dollarsPerGb":           5.85,
+"predictedDollarsPerGb":           9.18,
+"logCostPerGb":           0.77,
+"predictedLogCostPerGb":           0.96,
+"ldate":          11443 
+},
+{
+ "dateDecimal":        2001.42,
+"date": "2001 June 28",
+"driveInfo": "Western Digital 7200 rpm EIDE",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":         219.99,
+"dollarsPerGb":           6.33,
+"predictedDollarsPerGb":           8.75,
+"logCostPerGb":            0.8,
+"predictedLogCostPerGb":           0.94,
+"ldate":          11474 
+},
+{
+ "dateDecimal":         2001.5,
+"date": "2001 July 6",
+"driveInfo": "Maxtor UATA 7200 rpm",
+"sizeInMb":          60000,
+"sizeInGb":             60,
+"cost":         329.99,
+"dollarsPerGb":           6.33,
+"predictedDollarsPerGb":           8.34,
+"logCostPerGb":            0.8,
+"predictedLogCostPerGb":           0.92,
+"ldate":          11504 
+},
+{
+ "dateDecimal":         2001.5,
+"date": "2001 July 20",
+"driveInfo": "Western Digital 7200 rpm UATA",
+"sizeInMb":          80000,
+"sizeInGb":             80,
+"cost": null,
+"dollarsPerGb":           5.75,
+"predictedDollarsPerGb":           8.34,
+"logCostPerGb":           0.76,
+"predictedLogCostPerGb":           0.92,
+"ldate":          11504 
+},
+{
+ "dateDecimal":        2001.58,
+"date": "2001 August 31",
+"driveInfo": "Western Digital 7200 rpm UATA",
+"sizeInMb":          60000,
+"sizeInGb":             60,
+"cost": null,
+"dollarsPerGb":           4.41,
+"predictedDollarsPerGb":           7.95,
+"logCostPerGb":           0.64,
+"predictedLogCostPerGb":            0.9,
+"ldate":          11535 
+},
+{
+ "dateDecimal":        2001.83,
+"date": "2001 November 30",
+"driveInfo": "Western Digital 7200 rpm EIDE UATA-100",
+"sizeInMb":         100000,
+"sizeInGb":            100,
+"cost": null,
+"dollarsPerGb":           2.99,
+"predictedDollarsPerGb":           6.89,
+"logCostPerGb":           0.48,
+"predictedLogCostPerGb":           0.84,
+"ldate":          11627 
+},
+{
+ "dateDecimal":        2001.92,
+"date": "2001 December 1",
+"driveInfo": "Maxtor 5400 rpm IDE",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":         158.88,
+"dollarsPerGb":           4.57,
+"predictedDollarsPerGb":           6.56,
+"logCostPerGb":           0.66,
+"predictedLogCostPerGb":           0.82,
+"ldate":          11657 
+},
+{
+ "dateDecimal":        2002.17,
+"date": "2002 March 8",
+"driveInfo": "Western Digital 5400 rpm EIDE Ultra ATA-100",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":         149.99,
+"dollarsPerGb":           4.31,
+"predictedDollarsPerGb":           5.68,
+"logCostPerGb":           0.63,
+"predictedLogCostPerGb":           0.75,
+"ldate":          11747 
+},
+{
+ "dateDecimal":         2002.5,
+"date": "2002 July 27",
+"driveInfo": "Maxtor 7200 rpm IDE",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":         128.88,
+"dollarsPerGb":            3.7,
+"predictedDollarsPerGb":           4.69,
+"logCostPerGb":           0.57,
+"predictedLogCostPerGb":           0.67,
+"ldate":          11869 
+},
+{
+ "dateDecimal":        2002.58,
+"date": "2002 August 9",
+"driveInfo": "Western Digital 7200 rpm EIDE Ultra ATA-100",
+"sizeInMb":         100000,
+"sizeInGb":            100,
+"cost":         229.99,
+"dollarsPerGb":           2.65,
+"predictedDollarsPerGb":           4.47,
+"logCostPerGb":           0.42,
+"predictedLogCostPerGb":           0.65,
+"ldate":          11900 
+},
+{
+ "dateDecimal":        2002.58,
+"date": "2002 August 16",
+"driveInfo": "Western Digital 7200 rpm Ultra ATA-100",
+"sizeInMb":          60000,
+"sizeInGb":             60,
+"cost":         149.99,
+"dollarsPerGb":           2.87,
+"predictedDollarsPerGb":           4.47,
+"logCostPerGb":           0.46,
+"predictedLogCostPerGb":           0.65,
+"ldate":          11900 
+},
+{
+ "dateDecimal":        2002.58,
+"date": "2002 August 16",
+"driveInfo": "Maxtor 7200 rpm EIDE Ultra ATA-133/100",
+"sizeInMb":          80000,
+"sizeInGb":             80,
+"cost":         259.99,
+"dollarsPerGb":           3.73,
+"predictedDollarsPerGb":           4.47,
+"logCostPerGb":           0.57,
+"predictedLogCostPerGb":           0.65,
+"ldate":          11900 
+},
+{
+ "dateDecimal":        2002.58,
+"date": "2002 August 23",
+"driveInfo": "Western Digital 5400 rpm EIDE Ultra ATA-100",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":          89.99,
+"dollarsPerGb":           2.59,
+"predictedDollarsPerGb":           4.47,
+"logCostPerGb":           0.41,
+"predictedLogCostPerGb":           0.65,
+"ldate":          11900 
+},
+{
+ "dateDecimal":        2002.58,
+"date": "2002 August 30",
+"driveInfo": "Western Digital 7200 rpm EIDE Ultra ATA-100",
+"sizeInMb":         100000,
+"sizeInGb":            100,
+"cost":         179.99,
+"dollarsPerGb":           2.07,
+"predictedDollarsPerGb":           4.47,
+"logCostPerGb":           0.32,
+"predictedLogCostPerGb":           0.65,
+"ldate":          11900 
+},
+{
+ "dateDecimal":        2002.67,
+"date": "2002 September 6",
+"driveInfo": "Western Digital 7200 rpm",
+"sizeInMb":         120000,
+"sizeInGb":            120,
+"cost":         269.99,
+"dollarsPerGb":           2.59,
+"predictedDollarsPerGb":           4.26,
+"logCostPerGb":           0.41,
+"predictedLogCostPerGb":           0.63,
+"ldate":          11931 
+},
+{
+ "dateDecimal":        2002.67,
+"date": "2002 September 6",
+"driveInfo": "Western Digital 7200 rpm EIDE",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":          99.99,
+"dollarsPerGb":           2.87,
+"predictedDollarsPerGb":           4.26,
+"logCostPerGb":           0.46,
+"predictedLogCostPerGb":           0.63,
+"ldate":          11931 
+},
+{
+ "dateDecimal":        2002.67,
+"date": "2002 September 20",
+"driveInfo": "Western Digital 5400 rpm EIDE Ultra ATA-100",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":          89.99,
+"dollarsPerGb":           2.59,
+"predictedDollarsPerGb":           4.26,
+"logCostPerGb":           0.41,
+"predictedLogCostPerGb":           0.63,
+"ldate":          11931 
+},
+{
+ "dateDecimal":        2002.67,
+"date": "2002 September 20",
+"driveInfo": "Western Digital 7200 rpm Ultra ATA-100",
+"sizeInMb":          60000,
+"sizeInGb":             60,
+"cost":         139.99,
+"dollarsPerGb":           2.68,
+"predictedDollarsPerGb":           4.26,
+"logCostPerGb":           0.43,
+"predictedLogCostPerGb":           0.63,
+"ldate":          11931 
+},
+{
+ "dateDecimal":        2003.75,
+"date": "2003 October 11",
+"driveInfo": "Maxtor 7200 rpm IDE",
+"sizeInMb":          40000,
+"sizeInGb":             40,
+"cost":          89.88,
+"dollarsPerGb":           2.58,
+"predictedDollarsPerGb":           2.28,
+"logCostPerGb":           0.41,
+"predictedLogCostPerGb":           0.36,
+"ldate":          12326 
+},
+{
+ "dateDecimal":        2003.75,
+"date": "2003 October 11",
+"driveInfo": "Maxtor 7200 rpm IDE",
+"sizeInMb":         120000,
+"sizeInGb":            120,
+"cost":            158,
+"dollarsPerGb":           1.52,
+"predictedDollarsPerGb":           2.28,
+"logCostPerGb":           0.18,
+"predictedLogCostPerGb":           0.36,
+"ldate":          12326 
+},
+{
+ "dateDecimal":        2003.83,
+"date": "2003 November 29",
+"driveInfo": "Maxtor Serial ATA",
+"sizeInMb":          80000,
+"sizeInGb":             80,
+"cost":            134,
+"dollarsPerGb":           1.93,
+"predictedDollarsPerGb":           2.18,
+"logCostPerGb":           0.29,
+"predictedLogCostPerGb":           0.34,
+"ldate":          12357 
+},
+{
+ "dateDecimal":        2003.83,
+"date": "2003 November 29",
+"driveInfo": "Western Digital SMB cache",
+"sizeInMb":          80000,
+"sizeInGb":             80,
+"cost":            124,
+"dollarsPerGb":           1.78,
+"predictedDollarsPerGb":           2.18,
+"logCostPerGb":           0.25,
+"predictedLogCostPerGb":           0.34,
+"ldate":          12357 
+},
+{
+ "dateDecimal":        2003.83,
+"date": "2003 November 29",
+"driveInfo": "Maxtor Serial ATA",
+"sizeInMb":         120000,
+"sizeInGb":            120,
+"cost":            168,
+"dollarsPerGb":           1.61,
+"predictedDollarsPerGb":           2.18,
+"logCostPerGb":           0.21,
+"predictedLogCostPerGb":           0.34,
+"ldate":          12357 
+},
+{
+ "dateDecimal":        2003.83,
+"date": "2003 November 29",
+"driveInfo": "Western Digital SMB cache",
+"sizeInMb":         120000,
+"sizeInGb":            120,
+"cost":            158,
+"dollarsPerGb":           1.52,
+"predictedDollarsPerGb":           2.18,
+"logCostPerGb":           0.18,
+"predictedLogCostPerGb":           0.34,
+"ldate":          12357 
+},
+{
+ "dateDecimal":        2003.83,
+"date": "2003 November 29",
+"driveInfo": "Maxtor 7200 rpm IDE",
+"sizeInMb":          80000,
+"sizeInGb":             80,
+"cost":          98.88,
+"dollarsPerGb":           1.42,
+"predictedDollarsPerGb":           2.18,
+"logCostPerGb":           0.15,
+"predictedLogCostPerGb":           0.34,
+"ldate":          12357 
+},
+{
+ "dateDecimal":        2003.83,
+"date": "2003 November 29",
+"driveInfo": "Maxtor 7200 rpm IDE",
+"sizeInMb":         120000,
+"sizeInGb":            120,
+"cost":         144.88,
+"dollarsPerGb":           1.39,
+"predictedDollarsPerGb":           2.18,
+"logCostPerGb":           0.14,
+"predictedLogCostPerGb":           0.34,
+"ldate":          12357 
+},
+{
+ "dateDecimal":        2004.17,
+"date": "2004 March 27",
+"driveInfo": "Western Digital Caviar 7200rpm",
+"sizeInMb":         160000,
+"sizeInGb":            160,
+"cost":         269.99,
+"dollarsPerGb":           1.94,
+"predictedDollarsPerGb":            1.8,
+"logCostPerGb":           0.29,
+"predictedLogCostPerGb":           0.25,
+"ldate":          12478 
+},
+{
+ "dateDecimal":        2004.17,
+"date": "2004 March 27",
+"driveInfo": "Cicero 7200rpm",
+"sizeInMb":         160000,
+"sizeInGb":            160,
+"cost":         269.95,
+"dollarsPerGb":           1.94,
+"predictedDollarsPerGb":            1.8,
+"logCostPerGb":           0.29,
+"predictedLogCostPerGb":           0.25,
+"ldate":          12478 
+},
+{
+ "dateDecimal":        2004.17,
+"date": "2004 March 27",
+"driveInfo": "Western Digital 7200rpm",
+"sizeInMb":         250000,
+"sizeInGb":            250,
+"cost":         369.99,
+"dollarsPerGb":            1.7,
+"predictedDollarsPerGb":            1.8,
+"logCostPerGb":           0.23,
+"predictedLogCostPerGb":           0.25,
+"ldate":          12478 
+},
+{
+ "dateDecimal":        2004.17,
+"date": "2004 March 27",
+"driveInfo": "Western Digital",
+"sizeInMb":          80000,
+"sizeInGb":             80,
+"cost":            109,
+"dollarsPerGb":           1.57,
+"predictedDollarsPerGb":            1.8,
+"logCostPerGb":            0.2,
+"predictedLogCostPerGb":           0.25,
+"ldate":          12478 
+},
+{
+ "dateDecimal":        2004.17,
+"date": "2004 March 27",
+"driveInfo": "Maxtor 7200rpm IDE",
+"sizeInMb":          80000,
+"sizeInGb":             80,
+"cost":             98,
+"dollarsPerGb":           1.41,
+"predictedDollarsPerGb":            1.8,
+"logCostPerGb":           0.15,
+"predictedLogCostPerGb":           0.25,
+"ldate":          12478 
+},
+{
+ "dateDecimal":        2004.17,
+"date": "2004 March 27",
+"driveInfo": "Western Digital",
+"sizeInMb":         120000,
+"sizeInGb":            120,
+"cost":            144,
+"dollarsPerGb":           1.38,
+"predictedDollarsPerGb":            1.8,
+"logCostPerGb":           0.14,
+"predictedLogCostPerGb":           0.25,
+"ldate":          12478 
+},
+{
+ "dateDecimal":        2004.17,
+"date": "2004 March 27",
+"driveInfo": "Maxtor 7200rpm IDE",
+"sizeInMb":         120000,
+"sizeInGb":            120,
+"cost":            129,
+"dollarsPerGb":           1.24,
+"predictedDollarsPerGb":            1.8,
+"logCostPerGb":           0.09,
+"predictedLogCostPerGb":           0.25,
+"ldate":          12478 
+},
+{
+ "dateDecimal":        2004.25,
+"date": "2004 April 2",
+"driveInfo": "Western Digital Caviar 7200rpm 4.2ms avg. seek time",
+"sizeInMb":         160000,
+"sizeInGb":            160,
+"cost":         169.99,
+"dollarsPerGb":           1.22,
+"predictedDollarsPerGb":           1.71,
+"logCostPerGb":           0.09,
+"predictedLogCostPerGb":           0.23,
+"ldate":          12509 
+},
+{
+ "dateDecimal":        2004.25,
+"date": "2004 April 16",
+"driveInfo": "Western Digital Caviar SE 7200rpm",
+"sizeInMb":         250000,
+"sizeInGb":            250,
+"cost":         249.99,
+"dollarsPerGb":           1.15,
+"predictedDollarsPerGb":           1.71,
+"logCostPerGb":           0.06,
+"predictedLogCostPerGb":           0.23,
+"ldate":          12509 
+},
+{
+ "dateDecimal":        2004.92,
+"date": "2004 December 4",
+"driveInfo": "Barracuda 7200.8 400GB, 7200RPM, Internal ATA/100",
+"sizeInMb":         400000,
+"sizeInGb":            400,
+"cost":            280,
+"dollarsPerGb":            0.7,
+"predictedDollarsPerGb":           1.17,
+"logCostPerGb":          -0.15,
+"predictedLogCostPerGb":           0.07,
+"ldate":          12753 
+},
+{
+ "dateDecimal":        2004.92,
+"date": "2004 December 9",
+"driveInfo": "250GB, 7200RPM, Internal ATA/133 Hard Drive",
+"sizeInMb":         250000,
+"sizeInGb":            250,
+"cost":            180,
+"dollarsPerGb":           0.72,
+"predictedDollarsPerGb":           1.17,
+"logCostPerGb":          -0.14,
+"predictedLogCostPerGb":           0.07,
+"ldate":          12753 
+},
+{
+ "dateDecimal":        2005.58,
+"date": "2005 August 29",
+"driveInfo": "400GB, 7200RPM, Internal ATA/100 Hard Drive",
+"sizeInMb":         400000,
+"sizeInGb":            400,
+"cost":            300,
+"dollarsPerGb":           0.75,
+"predictedDollarsPerGb":            0.8,
+"logCostPerGb":          -0.12,
+"predictedLogCostPerGb":           -0.1,
+"ldate":          12996 
+},
+{
+ "dateDecimal":        2005.58,
+"date": "2005 August 29",
+"driveInfo": "Ultra16 250GB, 7200RPM, Internal ATA/133",
+"sizeInMb":         250000,
+"sizeInGb":            250,
+"cost":            160,
+"dollarsPerGb":           0.64,
+"predictedDollarsPerGb":            0.8,
+"logCostPerGb":          -0.19,
+"predictedLogCostPerGb":           -0.1,
+"ldate":          12996 
+},
+{
+ "dateDecimal":        2005.92,
+"date": "2005 December 12",
+"driveInfo": "Hitachi Deskstar 7K250 250GB Hard Drive",
+"sizeInMb":         250000,
+"sizeInGb":            250,
+"cost":            130,
+"dollarsPerGb":           0.52,
+"predictedDollarsPerGb":           0.66,
+"logCostPerGb":          -0.28,
+"predictedLogCostPerGb":          -0.18,
+"ldate":          13118 
+},
+{
+ "dateDecimal":        2005.92,
+"date": "2005 December 12",
+"driveInfo": "Seagate Barracuda 200GB Hard Drive",
+"sizeInMb":         200000,
+"sizeInGb":            200,
+"cost":            140,
+"dollarsPerGb":            0.7,
+"predictedDollarsPerGb":           0.66,
+"logCostPerGb":          -0.15,
+"predictedLogCostPerGb":          -0.18,
+"ldate":          13118 
+},
+{
+ "dateDecimal":         2006.5,
+"date": "2006 July 5",
+"driveInfo": "Maxtor Ultra16 300GB Hard Drive",
+"sizeInMb":         300000,
+"sizeInGb":            300,
+"cost":            150,
+"dollarsPerGb":            0.5,
+"predictedDollarsPerGb":           0.47,
+"logCostPerGb":           -0.3,
+"predictedLogCostPerGb":          -0.33,
+"ldate":          13330 
+},
+{
+ "dateDecimal":         2006.5,
+"date": "2006 July 5",
+"driveInfo": "Seagate Barracuda 7200.9 500GB Hard Drive",
+"sizeInMb":         500000,
+"sizeInGb":            500,
+"cost":            300,
+"dollarsPerGb":            0.6,
+"predictedDollarsPerGb":           0.47,
+"logCostPerGb":          -0.22,
+"predictedLogCostPerGb":          -0.33,
+"ldate":          13330 
+},
+{
+ "dateDecimal":        2006.92,
+"date": "2006 December 27",
+"driveInfo": "Western Digital Caviar SE16 250GB Hard Drive",
+"sizeInMb":         250000,
+"sizeInGb":            250,
+"cost":            140,
+"dollarsPerGb":           0.56,
+"predictedDollarsPerGb":           0.37,
+"logCostPerGb":          -0.25,
+"predictedLogCostPerGb":          -0.43,
+"ldate":          13483 
+},
+{
+ "dateDecimal":        2006.92,
+"date": "2006 December 27",
+"driveInfo": "Samsung 80GB Hard Drive",
+"sizeInMb":          80000,
+"sizeInGb":             80,
+"cost":             35,
+"dollarsPerGb":           0.44,
+"predictedDollarsPerGb":           0.37,
+"logCostPerGb":          -0.36,
+"predictedLogCostPerGb":          -0.43,
+"ldate":          13483 
+},
+{
+ "dateDecimal":        2007.42,
+"date": "2007 June 24",
+"driveInfo": "Seagate 250GB Hard Drive",
+"sizeInMb":         250000,
+"sizeInGb":            250,
+"cost":            100,
+"dollarsPerGb":            0.4,
+"predictedDollarsPerGb":           0.28,
+"logCostPerGb":           -0.4,
+"predictedLogCostPerGb":          -0.56,
+"ldate":          13665 
+},
+{
+ "dateDecimal":        2007.42,
+"date": "2007 June 24",
+"driveInfo": "Seagate 160GB Hard Drive",
+"sizeInMb":         160000,
+"sizeInGb":            160,
+"cost":             70,
+"dollarsPerGb":           0.44,
+"predictedDollarsPerGb":           0.28,
+"logCostPerGb":          -0.36,
+"predictedLogCostPerGb":          -0.56,
+"ldate":          13665 
+},
+{
+ "dateDecimal":           2008,
+"date": "2008 January 13",
+"driveInfo": "Seagate Barracuda 7200.10 750GB",
+"sizeInMb":         750000,
+"sizeInGb":            750,
+"cost":            200,
+"dollarsPerGb":           0.27,
+"predictedDollarsPerGb":            0.2,
+"logCostPerGb":          -0.57,
+"predictedLogCostPerGb":           -0.7,
+"ldate":          13879 
+},
+{
+ "dateDecimal":           2008,
+"date": "2008 January 13",
+"driveInfo": "Beyond Micro Monster Mobile 1TB",
+"sizeInMb":        1000000,
+"sizeInGb":           1000,
+"cost":            270,
+"dollarsPerGb":           0.27,
+"predictedDollarsPerGb":            0.2,
+"logCostPerGb":          -0.57,
+"predictedLogCostPerGb":           -0.7,
+"ldate":          13879 
+},
+{
+ "dateDecimal":        2008.64,
+"date": "2008 July 20",
+"driveInfo": "Hitachi - DeskStar 750GB Internal Hard Drive Model OA34914 SKU: 8295793",
+"sizeInMb":         750000,
+"sizeInGb":            750,
+"cost":         133.99,
+"dollarsPerGb":           0.18,
+"predictedDollarsPerGb":           0.14,
+"logCostPerGb":          -0.75,
+"predictedLogCostPerGb":          -0.86,
+"ldate":          14061 
+},
+{
+ "dateDecimal":        2008.64,
+"date": "2008 July 20",
+"driveInfo": "Western Digital - Caviar GP 500GB Internal Hard Drive Model: WD5000CSRTL SKU: 8682311",
+"sizeInMb":         500000,
+"sizeInGb":            500,
+"cost":          89.99,
+"dollarsPerGb":           0.18,
+"predictedDollarsPerGb":           0.14,
+"logCostPerGb":          -0.74,
+"predictedLogCostPerGb":          -0.86,
+"ldate":          14061 
+},
+{
+ "dateDecimal":         2009.5,
+"date": "2009 July 24",
+"driveInfo": "HITACHI 0A38016 7200 RPM SATA 3.0Gb/s",
+"sizeInMb":        1000000,
+"sizeInGb":           1000,
+"cost":          74.99,
+"dollarsPerGb":           0.07,
+"predictedDollarsPerGb":           0.08,
+"logCostPerGb":          -1.15,
+"predictedLogCostPerGb":          -1.08,
+"ldate":          14426 
+},
+{
+ "dateDecimal":        2010.08,
+"date": "2010 January 2",
+"driveInfo": "Hitachi 1 TB Deskstar SATA 7200 RPM 32 MB Cache Internal Hard Drive HD31000 IDK/7K",
+"sizeInMb":        1000000,
+"sizeInGb":           1000,
+"cost":          69.99,
+"dollarsPerGb":           0.07,
+"predictedDollarsPerGb":           0.06,
+"logCostPerGb":          -1.15,
+"predictedLogCostPerGb":          -1.22,
+"ldate":          14610 
+},
+{
+ "dateDecimal":        2010.74,
+"date": "2010 August 31",
+"driveInfo": "Seagate Barracuda 7200.11 ST31500341AS 1.5TB 7200 RPM SATA 3.0Gb/s 3.5 Internal Hard Drive\t1500000\t1500.000\t84.99\t0.06\t0.04\t-1.25\t-1.39\n2010.74\t2010 August 31\tWestern Digital Caviar Green WD20EARS 2TB SATA 3.0Gb/s 3.5 Internal Hard Drive -Bare Drive",
+"sizeInMb":        2000000,
+"sizeInGb":           2000,
+"cost":         119.99,
+"dollarsPerGb":           0.06,
+"predictedDollarsPerGb":           0.04,
+"logCostPerGb":          -1.22,
+"predictedLogCostPerGb":          -1.39,
+"ldate":          14822 
+},
+{
+ "dateDecimal":        2011.26,
+"date": "2011 March 8",
+"driveInfo": "Seagate Barracuda 7200.11 ST31500341AS 1.5TB 7200 RPM SATA 3.0Gb/s 3.5 Internal Hard Drive -Bare Drive\t1500000\t1500.000\t69.99\t0.05\t0.03\t-1.33\t-1.52\n2011.26\t2011 March 8\tWestern Digital Caviar Green WD20EARS 2TB SATA 3.0Gb/s 3.5 Internal Hard Drive -Bare Drive",
+"sizeInMb":        2000000,
+"sizeInGb":           2000,
+"cost":          79.99,
+"dollarsPerGb":           0.04,
+"predictedDollarsPerGb":           0.03,
+"logCostPerGb":           -1.4,
+"predictedLogCostPerGb":          -1.52,
+"ldate":          15034 
+},
+{
+ "dateDecimal":        2012.29,
+"date": "2012 March 19",
+"driveInfo": "Seagate Barracuda Green 2TB SATA 6Gb/s 64MB Cache 3.5-Inch Internal Bare Drive ST2000DL003",
+"sizeInMb":        2000000,
+"sizeInGb":           2000,
+"cost":          94.99,
+"dollarsPerGb":           0.05,
+"predictedDollarsPerGb":           0.02,
+"logCostPerGb":          -1.32,
+"predictedLogCostPerGb":          -1.78,
+"ldate":          15400 
+},
+{
+ "dateDecimal":        2013.29,
+"date": "2013 March 17",
+"driveInfo": "Seagate Barracuda 2 TB HDD SATA 6 Gb/s NCQ 64MB Cache 3.5-Inch Internal Bare Drive ST2000DM001",
+"sizeInMb":        2000000,
+"sizeInGb":           2000,
+"cost":          74.99,
+"dollarsPerGb":           0.04,
+"predictedDollarsPerGb":           0.01,
+"logCostPerGb":          -1.43,
+"predictedLogCostPerGb":          -2.02,
+"ldate":          15765 
+},
+{
+ "dateDecimal":        2013.29,
+"date": "2013 March 17",
+"driveInfo": "WD Red 3 TB NAS Hard Drive: 3.5 Inch, SATA III, 64 MB Cache - WD30EFRX",
+"sizeInMb":        3000000,
+"sizeInGb":           3000,
+"cost":         159.91,
+"dollarsPerGb":           0.05,
+"predictedDollarsPerGb":           0.01,
+"logCostPerGb":          -1.27,
+"predictedLogCostPerGb":          -2.02,
+"ldate":          15765 
+},
+{
+ "dateDecimal":        2014.25,
+"date": "2014 March 4",
+"driveInfo": "TOSHIBA DT01ACA300 3TB 7200 RPM 64MB Cache SATA 6.0Gb/s 3.5 Internal Hard Drive Bare Drive\t3000000\t3000.000\t99.99\t0.03\t0.01\t-1.48\t-2.27\n2014.25\t2014 March 4\tWestern Digital WD Green WD20EZRX 2TB IntelliPower 64MB Cache SATA 6.0Gb/s 3.5 Internal Hard Drive Bare Drive",
+"sizeInMb":        2000000,
+"sizeInGb":           2000,
+"cost":          89.99,
+"dollarsPerGb":           0.04,
+"predictedDollarsPerGb":           0.01,
+"logCostPerGb":          -1.35,
+"predictedLogCostPerGb":          -2.27,
+"ldate":          16130 
+} 
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        chart
+  .tooltipContent( function(key, x, y, e){ 
+  return 'drive: ' + e.point.driveInfo + ', size in Gb: ' + e.point.sizeInGb + 
+        ', cost: ' + e.point.cost
+} )
+  .showControls(false)
+          
+        chart.xAxis
+  .tickFormat(
+      function(d) {return d3.time.format('%Y')(new Date(d*1000*3600*24));}
+    )
+
+        
+        
+        chart.yAxis
+  .axisLabel("Cost per gigabyte")
+  .tickFormat( function(d) {return '$' + d} )
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+
+<p><span style="color:red; font-family:Georgia; font-size:0.4em;">
+source: <a href="http://www.mkomo.com/cost-per-gigabyte-update">http://www.mkomo.com/cost-per-gigabyte-update</a>
+</span></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Effect of technology improvements</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><a href="https://commons.wikimedia.org/wiki/File:Gordon_Moore.jpg#/media/File:Gordon_Moore.jpg"><img src="./assets/img/Gordon_Moore.jpg" alt="&quot;Gordon Moore&quot; by Steve Jurvetson from Menlo Park, USA - Moore Fish. Licensed under CC BY 2.0 via Wikimedia Commons"></a></p>
+
+<p>The cost of data processing, communications, and storage is essentially zero.</p>
+
+<hr>
+
+<p><a href="https://webapp.usm.maine.edu/confluence/display/kb/How+to+deal+with+a+full+mailbox"><img src="./assets/img/groupwise_quota.png" alt="Groupwise Quota"></a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  <aside class="note" id="">
+    <section>
+      <p>When I came to USM, we were using groupwise and not gmail.
+How much space is on the maine.edu gmail drives? 30Gb and keeps going up
+Why are we still doing this?</p>
+
+    </section>
+  </aside>
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Top 10 Median Salaries: 2012 (Bachelor&#39;s Degree Typical)</h2>
+  </hgroup>
+  <article data-timings="">
+    <div id = 'chart3' class = 'rChart nvd3'></div>
+
+<script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart3()
+    });
+    function drawchart3(){  
+      var opts = {
+ "dom": "chart3",
+"width":    800,
+"height":    400,
+"x": "Title",
+"y": "median.salary.2012",
+"type": "multiBarHorizontalChart",
+"id": "chart3" 
+},
+        data = [
+ {
+ "Title": "Chief executives",
+"Code": "11-1011",
+"employment.2012":          330.5,
+"employment.2022":          347.9,
+"Number.increase":           17.4,
+"Percent.increase":            5.3,
+"Percent.self.employed":           17.7,
+"job.openings.2012":           87.8,
+"median.salary.2012":         168140,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Petroleum engineers",
+"Code": "17-2171",
+"employment.2012":           38.5,
+"employment.2022":           48.4,
+"Number.increase":            9.8,
+"Percent.increase":           25.5,
+"Percent.self.employed":            3.2,
+"job.openings.2012":           19.6,
+"median.salary.2012":         130280,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "None",
+"training": "None" 
+},
+{
+ "Title": "Architectural and engineering managers",
+"Code": "Nov-41",
+"employment.2012":          193.8,
+"employment.2022":          206.9,
+"Number.increase":           13.1,
+"Percent.increase":            6.7,
+"Percent.self.employed":            1.7,
+"job.openings.2012":           60.6,
+"median.salary.2012":         124870,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Computer and information systems managers",
+"Code": "Nov-21",
+"employment.2012":          332.7,
+"employment.2022":          383.6,
+"Number.increase":           50.9,
+"Percent.increase":           15.3,
+"Percent.self.employed":            3.1,
+"job.openings.2012":           97.1,
+"median.salary.2012":         120950,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Marketing managers",
+"Code": "Nov-21",
+"employment.2012":          180.5,
+"employment.2022":          203.4,
+"Number.increase":           22.9,
+"Percent.increase":           12.7,
+"Percent.self.employed":            2.6,
+"job.openings.2012":           61.7,
+"median.salary.2012":         119480,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Natural sciences managers",
+"Code": "Nov-21",
+"employment.2012":           51.6,
+"employment.2022":           54.5,
+"Number.increase":            2.9,
+"Percent.increase":            5.7,
+"Percent.self.employed":            1.1,
+"job.openings.2012":           13.7,
+"median.salary.2012":         115730,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Airline pilots, copilots, and flight engineers",
+"Code": "53-2011",
+"employment.2012":           66.4,
+"employment.2022":           62.1,
+"Number.increase":           -4.4,
+"Percent.increase":           -6.6,
+"Percent.self.employed": null,
+"job.openings.2012":           19.2,
+"median.salary.2012":         114200,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "Less than 5 years",
+"training": "Moderate-term on-the-job training" 
+},
+{
+ "Title": "Financial managers",
+"Code": "Nov-31",
+"employment.2012":          532.1,
+"employment.2022":          579.2,
+"Number.increase":           47.1,
+"Percent.increase":            8.9,
+"Percent.self.employed":            5.1,
+"job.openings.2012":          146.9,
+"median.salary.2012":         109740,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Sales managers",
+"Code": "Nov-22",
+"employment.2012":          359.3,
+"employment.2022":            389,
+"Number.increase":           29.8,
+"Percent.increase":            8.3,
+"Percent.self.employed":            2.7,
+"job.openings.2012":          106.9,
+"median.salary.2012":         105260,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "Less than 5 years",
+"training": "None" 
+},
+{
+ "Title": "Nuclear engineers",
+"Code": "17-2161",
+"employment.2012":           20.4,
+"employment.2022":           22.3,
+"Number.increase":            1.9,
+"Percent.increase":            9.3,
+"Percent.self.employed": null,
+"job.openings.2012":            7.1,
+"median.salary.2012":         104270,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "None",
+"training": "None" 
+} 
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        chart
+  .margin({
+ "left":    250 
+})
+  .showControls(false)
+          
+        
+
+        
+        
+        
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+
+<p><span style="font-family:Georgia; font-size:0.4em;">
+source: <a href="http://www.bls.gov/emp/ep_table_107.htm">Bureau of Labor Statistics</a>
+</span></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Projected Job Openings: 2022 (Bachelor&#39;s Degree Typical)</h2>
+  </hgroup>
+  <article data-timings="">
+    <div id = 'chart4' class = 'rChart nvd3'></div>
+
+<script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart4()
+    });
+    function drawchart4(){  
+      var opts = {
+ "dom": "chart4",
+"width":    800,
+"height":    400,
+"x": "Title",
+"y": "job.openings.2012",
+"type": "multiBarHorizontalChart",
+"id": "chart4" 
+},
+        data = [
+ {
+ "Title": "Chief executives",
+"Code": "11-1011",
+"employment.2012":          330.5,
+"employment.2022":          347.9,
+"Number.increase":           17.4,
+"Percent.increase":            5.3,
+"Percent.self.employed":           17.7,
+"job.openings.2012":           87.8,
+"median.salary.2012":         168140,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Petroleum engineers",
+"Code": "17-2171",
+"employment.2012":           38.5,
+"employment.2022":           48.4,
+"Number.increase":            9.8,
+"Percent.increase":           25.5,
+"Percent.self.employed":            3.2,
+"job.openings.2012":           19.6,
+"median.salary.2012":         130280,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "None",
+"training": "None" 
+},
+{
+ "Title": "Architectural and engineering managers",
+"Code": "Nov-41",
+"employment.2012":          193.8,
+"employment.2022":          206.9,
+"Number.increase":           13.1,
+"Percent.increase":            6.7,
+"Percent.self.employed":            1.7,
+"job.openings.2012":           60.6,
+"median.salary.2012":         124870,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Computer and information systems managers",
+"Code": "Nov-21",
+"employment.2012":          332.7,
+"employment.2022":          383.6,
+"Number.increase":           50.9,
+"Percent.increase":           15.3,
+"Percent.self.employed":            3.1,
+"job.openings.2012":           97.1,
+"median.salary.2012":         120950,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Marketing managers",
+"Code": "Nov-21",
+"employment.2012":          180.5,
+"employment.2022":          203.4,
+"Number.increase":           22.9,
+"Percent.increase":           12.7,
+"Percent.self.employed":            2.6,
+"job.openings.2012":           61.7,
+"median.salary.2012":         119480,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Natural sciences managers",
+"Code": "Nov-21",
+"employment.2012":           51.6,
+"employment.2022":           54.5,
+"Number.increase":            2.9,
+"Percent.increase":            5.7,
+"Percent.self.employed":            1.1,
+"job.openings.2012":           13.7,
+"median.salary.2012":         115730,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Airline pilots, copilots, and flight engineers",
+"Code": "53-2011",
+"employment.2012":           66.4,
+"employment.2022":           62.1,
+"Number.increase":           -4.4,
+"Percent.increase":           -6.6,
+"Percent.self.employed": null,
+"job.openings.2012":           19.2,
+"median.salary.2012":         114200,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "Less than 5 years",
+"training": "Moderate-term on-the-job training" 
+},
+{
+ "Title": "Financial managers",
+"Code": "Nov-31",
+"employment.2012":          532.1,
+"employment.2022":          579.2,
+"Number.increase":           47.1,
+"Percent.increase":            8.9,
+"Percent.self.employed":            5.1,
+"job.openings.2012":          146.9,
+"median.salary.2012":         109740,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "5 years or more",
+"training": "None" 
+},
+{
+ "Title": "Sales managers",
+"Code": "Nov-22",
+"employment.2012":          359.3,
+"employment.2022":            389,
+"Number.increase":           29.8,
+"Percent.increase":            8.3,
+"Percent.self.employed":            2.7,
+"job.openings.2012":          106.9,
+"median.salary.2012":         105260,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "Less than 5 years",
+"training": "None" 
+},
+{
+ "Title": "Nuclear engineers",
+"Code": "17-2161",
+"employment.2012":           20.4,
+"employment.2022":           22.3,
+"Number.increase":            1.9,
+"Percent.increase":            9.3,
+"Percent.self.employed": null,
+"job.openings.2012":            7.1,
+"median.salary.2012":         104270,
+"typical.requirements": "Bachelor's degree",
+"typical.experience": "None",
+"training": "None" 
+} 
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        chart
+  .showControls(false)
+  .margin({
+ "left":    250 
+})
+          
+        
+
+        
+        
+        
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+
+<p><span style="font-family:Georgia; font-size:0.4em;">
+source: <a href="http://www.bls.gov/emp/ep_table_107.htm">Bureau of Labor Statistics</a>
+</span></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Five Component Model</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="./assets/img/fig01_05.jpg" alt="Five Component Model"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+  <aside class="note" id="">
+    <section>
+      <p>Think about a company like Uber.<br>
+What industry is it displacing? Taxis.<br>
+What became more automated? Hailing, transactions
+What value is added? Lower cost, driver rating, passenger rating
+Why is Uber so highly valued? Data.
+What are some issues? Regulation.
+Uber&#39;s information systems rely on all of the above. Take one tiny example...the rating system. The more people use it, the better the user experience becomes.</p>
+
+    </section>
+  </aside>
+</slide>
+
+<slide class="" id="slide-8" style="background:;">
+  <hgroup>
+    <h2>Ethics Guide - Which graph should you use?</h2>
+  </hgroup>
+  <article data-timings="">
+    
+<div class="quiz quiz-single well ">
+  <p><img src="./assets/img/fig1_3.jpg" alt="Figure 1-3"></p>
+
+<ol>
+<li>Figure 1</li>
+<li>Figure 2</li>
+<li><em>Figure 3</em></li>
+</ol>
+
+  <button class="quiz-submit btn btn-primary">Submit</button>
+  <button class="quiz-toggle-hint btn btn-info">Show Hint</button>
+  <button class="quiz-show-answer btn btn-success">Show Answer</button>
+  <button class="quiz-clear btn btn-danger">Clear</button>
+  
+  <div class="quiz-hint">
+  <p>Unless you have good reason, truncating the y axis is usually a bad choice.</p>
+
+</div>
+<div class="quiz-explanation">
+  <p>Figures 1 and 2 visually overstate the growth rate. Figure 1 is worse because there are no units shown.</p>
+
+</div>
+</div>
   </article>
   <!-- Presenter Notes -->
 </slide>
@@ -183,14 +4504,44 @@ Why are we still doing this?</p>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=2 title='Effect of Moore&#39;s Law'>
+        data-slide=2 title='Transistor Prices'>
          2
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=3 title='Transistor Prices'>
+        data-slide=3 title='Storage Prices'>
          3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Effect of technology improvements'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Top 10 Median Salaries: 2012 (Bachelor&#39;s Degree Typical)'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Projected Job Openings: 2022 (Bachelor&#39;s Degree Typical)'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Five Component Model'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='Ethics Guide - Which graph should you use?'>
+         8
       </a>
     </li>
   </ul>

@@ -15,7 +15,7 @@ knit        : slidify::knit2slides
 ## What is Moore's Law?
 
 1. Computer processors become twice as fast every 18 months.
-2. _The number of transistors we cab fit on a processor chip doubles every 18 months._
+2. _The number of transistors we can fit on a processor chip doubles every 18 months._
 3. Bandwidth on the interenet doubles every 18 months.
 4. The number of users on the internet doubles every 18 months.
 
@@ -30,7 +30,49 @@ Append ?presentme=true to url
 
 --- .class #id 
 
-## Effect of Moore's Law
+## Transistor Prices
+```{r echo = F, results = 'asis'}
+require(rCharts)
+years <- c('1983', '1985', '1988', '1997', '2002', '2005', '2015')
+cost <- c(3923, 902.95, 314.50, 17.45, 0.97, 0.05, 0.01)
+transistors <- data.frame(year = years, cost = cost)
+n1 <- nPlot(cost ~ year, type = "scatterChart", data = transistors)
+n1$yAxis(axisLabel = 'Cost per 100K transistors (2010 dollars)')
+n1$yAxis(tickFormat = "#! function(d) {return '$' + d} !#")
+n1$chart(showControls = FALSE)
+n1$print('chart1')
+```
+
+--- .class #id
+
+## Storage Prices
+```{r echo = F, results = 'asis'}
+
+storage <- read.table("hdcost.tsv", sep="\t", header = TRUE)
+storage$ldate <- as.Date(x=paste("1", storage$date), "%d %Y %B")
+n2 <- nPlot(dollarsPerGb ~ ldate, type = "scatterChart", data = storage)
+n2$chart(tooltipContent = "#! function(key, x, y, e){ 
+  return 'drive: ' + e.point.driveInfo + ', size in Gb: ' + e.point.sizeInGb + 
+        ', cost: ' + e.point.cost
+} !#")
+n2$yAxis(axisLabel = 'Cost per gigabyte')
+n2$yAxis(tickFormat = "#! function(d) {return '$' + d} !#")
+n2$xAxis(
+    tickFormat =   "#!
+      function(d) {return d3.time.format('%Y')(new Date(d*1000*3600*24));}
+    !#"
+  )
+n2$chart(showControls = FALSE)
+n2$print('chart2')
+```
+
+<span style="color:red; font-family:Georgia; font-size:0.4em;">
+source: [http://www.mkomo.com/cost-per-gigabyte-update](http://www.mkomo.com/cost-per-gigabyte-update)
+</span>
+
+--- .class #id
+
+## Effect of technology improvements
 
 [!["Gordon Moore" by Steve Jurvetson from Menlo Park, USA - Moore Fish. Licensed under CC BY 2.0 via Wikimedia Commons](./assets/img/Gordon_Moore.jpg)](https://commons.wikimedia.org/wiki/File:Gordon_Moore.jpg#/media/File:Gordon_Moore.jpg)
 
@@ -47,13 +89,76 @@ How much space is on the maine.edu gmail drives? 30Gb and keeps going up
 Why are we still doing this?
 
 --- .class #id
-## Transistor Prices
-```{r echo = F, results = 'asis'}
-require(rCharts)
-years <- c('1983', '1985', '1988', '1997', '2002', '2005', '2015')
-cost <- c(3923, 902.95, 314.50, 17.45, 0.97, 0.05, 0.01)
-transistors <- data.frame(year = years, cost = cost)
-m1 <- mPlot(x = "year", y = "cost", type = "line", data = transistors)
-m1$set(pointSize = 0, lineWidth = 1)
-m1$print('chart1')
+
+## Top 10 Median Salaries: 2012 (Bachelor's Degree Typical)
+
+```{r echo = F, results = 'asis', warning=FALSE}
+library(dplyr)
+jobs <- read.csv("salaries.csv", stringsAsFactors = FALSE)
+jobs[,3:9] <- suppressWarnings(sapply(jobs[,3:9], as.numeric))
+jobs_b <- jobs %>% filter(typical.requirements == "Bachelor's degree") %>%
+        arrange(desc(median.salary.2012)) %>% top_n(10, median.salary.2012)
+n3 <- nPlot(median.salary.2012 ~ Title, type = "multiBarHorizontalChart", data = jobs_b)
+n3$chart(margin = list(left = 250))
+n3$chart(showControls = FALSE)
+n3$print('chart3')
 ```
+
+<span style="font-family:Georgia; font-size:0.4em;">
+source: [Bureau of Labor Statistics](http://www.bls.gov/emp/ep_table_107.htm)
+</span>
+
+--- .class #id
+
+## Projected Job Openings: 2022 (Bachelor's Degree Typical)
+
+```{r echo = F, results = 'asis', warning=FALSE}
+library(dplyr)
+jobs <- read.csv("salaries.csv", stringsAsFactors = FALSE)
+jobs[,3:9] <- suppressWarnings(sapply(jobs[,3:9], as.numeric))
+jobs_b <- jobs %>% filter(typical.requirements == "Bachelor's degree") %>%
+        arrange(desc(median.salary.2012)) %>% top_n(10, median.salary.2012)
+n4 <- nPlot(job.openings.2012 ~ Title, type = "multiBarHorizontalChart", data = jobs_b)
+n4$chart(showControls = FALSE)
+n4$chart(margin = list(left = 250))
+n4$print('chart4')
+```
+
+<span style="font-family:Georgia; font-size:0.4em;">
+source: [Bureau of Labor Statistics](http://www.bls.gov/emp/ep_table_107.htm)
+</span>
+
+--- .class #id
+
+## Five Component Model
+
+![Five Component Model](./assets/img/fig01_05.jpg)
+
+*** =pnotes
+Think about a company like Uber.  
+What industry is it displacing? Taxis.  
+What became more automated? Hailing, transactions
+What value is added? Lower cost, driver rating, passenger rating
+Why is Uber so highly valued? Data.
+What are some issues? Regulation.
+Uber's information systems rely on all of the above. Take one tiny example...the rating system. The more people use it, the better the user experience becomes.
+
+--- &radio
+
+## Ethics Guide - Which graph should you use?
+
+![Figure 1-3](./assets/img/fig1_3.jpg)
+
+1. Figure 1
+2. Figure 2
+3. _Figure 3_
+
+*** .hint
+Unless you have good reason, truncating the y axis is usually a bad choice.
+
+*** .explanation
+Figures 1 and 2 visually overstate the growth rate. Figure 1 is worse because there are no units shown.
+
+
+
+
